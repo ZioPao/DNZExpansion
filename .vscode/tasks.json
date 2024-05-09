@@ -1,0 +1,22 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Create Workshop folder (DNZ)",
+            "type": "shell",
+            "options": {"statusbar": {"label": "$(combine) Assemble Mod (DNZ)"}},
+            "command": "python ${config:zomboid_user_folder}/PaosCrap/make_workshop_pack.py picch ${workspaceFolderBasename}",
+        },
+        {
+            "label": "Run Zomboid Test Server",
+            "options": {"statusbar": {"label": "$(run) Zomboid Server (Pandemonium+DNZ)"}},
+            "type": "shell",
+            "command":"\"${config:zomboid_server_folder}\\StartServer64_nosteam_custom.bat\" pande_dnz",
+            "problemMatcher": [
+                "$eslint-stylish"
+            ]
+        }
+    ]
+}

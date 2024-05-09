@@ -1,0 +1,10 @@
+id=PDS_DNZE
+name=[ADDON] Pandemonium RP Dice System - DNZ Expansion
+require=PandemoniumDiceSystem
+description=...
+poster=poster.png
+authors=Pao
+icon=icon.png
+tags=Build 41
+versionMin=41.0
+modversion=1.0
