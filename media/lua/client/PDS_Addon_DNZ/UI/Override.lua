@@ -7,7 +7,7 @@ local CommonUI = require("UI/DiceSystem_CommonUI")
 local og_DiceMenu_addSkillPanelLabel = DiceMenu.addSkillPanelLabel
 function DiceMenu:addSkillPanelLabel(parent, skill, x, frameHeight)
     -- Moves the Label a bit to the right to make space for the Side Btn
-    x = CommonUI.BUTTON_WIDTH + 10
+    x = CommonUI.BUTTON_WIDTH/2 + 10
     og_DiceMenu_addSkillPanelLabel(self, parent, skill, x, frameHeight)
 end
 
