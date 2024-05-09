@@ -10,7 +10,7 @@ local CommonUI = require("UI/DiceSystem_CommonUI")
 
 ------------------
 ---@class SubSkillsSubMenu : ISCollapsableWindow
-SubSkillsSubMenu = ISCollapsableWindow:derive("SubSkillsSubMenu")
+SubSkillsSubMenu = ISPanel:derive("SubSkillsSubMenu")
 
 
 
@@ -20,20 +20,18 @@ SubSkillsSubMenu = ISCollapsableWindow:derive("SubSkillsSubMenu")
 ---@param skill string
 ---@param parent ISPanel
 function SubSkillsSubMenu.Toggle(parent, skill, pl, username)
-
-    print("Toggling side panel for skill " .. skill)
-
+    --print("Toggling side panel for skill " .. skill)
     -- Check if side panel is already open
     if parent.openedPanel then
 
-        print("opened panel already exists")
+        --print("opened panel already exists")
         if parent.openedPanel:getIsVisible() then
-            print("closing it")
+            --print("closing it")
             parent.openedPanel:close()
 
             -- check if skill is the same, if it is then return here since we're toggling it
             if parent.openedPanel.skill == skill then
-                print("toggle, returning")
+                --print("toggle, returning")
                 return
             end
         end
@@ -80,30 +78,62 @@ end
 --************************************--
 ---Initialization
 function SubSkillsSubMenu:initialise()
-    ISCollapsableWindow.initialise(self)
+    ISPanel.initialise(self)
     self:addToUIManager()
 end
 
+
+function SubSkillsSubMenu:addSkillPanel()
+
+
+end
+
+
+
 function SubSkillsSubMenu:createChildren()
-    ISCollapsableWindow.createChildren(self)
+    ISPanel.createChildren(self)
 
     -- Add sub skills related to that specific skill
+
+    local subSkills = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill]
+    local yOffset = 0
+    local frameHeight = 40
+
+    -- TODO Make it work
+    local isInitialized = false
+    local plUsername = getPlayer():getUsername()
+
+    for i=1, #subSkills do
+        local subSkill = subSkills[i]
+        local skillPanel = CommonUI.CreateBaseSingleSkillPanel(self, subSkill, i % 2 ~= 0, yOffset, frameHeight)
+
+        local xOffset = 10
+        CommonUI.AddSkillPanelLabel(self, skillPanel, subSkill, xOffset, frameHeight)
+        CommonUI.AddSkillPanelButtons(self, skillPanel, subSkill, isInitialized, frameHeight, plUsername)
+        CommonUI.AddSkillPanelPoints(self, skillPanel, subSkill)
+
+        yOffset = yOffset + frameHeight
+
+        self:addChild(skillPanel)
+        --self:setHeight(self:getHeight() + frameHeight)
+    end
+
 end
 
 function SubSkillsSubMenu:update()
-    ISCollapsableWindow.update(self)
+    ISPanel.update(self)
 end
 
 function SubSkillsSubMenu:prerender()
-    ISCollapsableWindow.prerender(self)
+    ISPanel.prerender(self)
 end
 
 function SubSkillsSubMenu:render()
-    ISCollapsableWindow.render(self)
+    ISPanel.render(self)
 end
 
 function SubSkillsSubMenu:close()
-    ISCollapsableWindow.close(self)
+    ISPanel.close(self)
 end
 
 

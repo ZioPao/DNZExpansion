@@ -5,17 +5,19 @@ local CommonUI = require("UI/DiceSystem_CommonUI")
 -----------------
 
 local og_DiceMenu_addSkillPanelLabel = DiceMenu.addSkillPanelLabel
-function DiceMenu:addSkillPanelLabel(parent, skill, x, frameHeight)
+---@diagnostic disable-next-line: duplicate-set-field
+function DiceMenu:addSkillPanelLabel(container, skill, x, frameHeight)
     -- Moves the Label a bit to the right to make space for the Side Btn
     x = CommonUI.BUTTON_WIDTH/2 + 10
-    og_DiceMenu_addSkillPanelLabel(self, parent, skill, x, frameHeight)
+    og_DiceMenu_addSkillPanelLabel(self, container, skill, x, frameHeight)
 end
 
 
 
 local og_DiceMenu_addSkillPanelButtons = DiceMenu.addSkillPanelButtons
-function DiceMenu:addSkillPanelButtons(parent, skill, isInitialized, frameHeight, plUsername)
-    og_DiceMenu_addSkillPanelButtons(self, parent, skill, isInitialized, frameHeight, plUsername)
+---@diagnostic disable-next-line: duplicate-set-field
+function DiceMenu:addSkillPanelButtons(container, skill, isInitialized, frameHeight, plUsername)
+    og_DiceMenu_addSkillPanelButtons(self, container, skill, isInitialized, frameHeight, plUsername)
 
     -- Adding Side Panel Toggle button 
     local btnWidth = CommonUI.BUTTON_WIDTH/2
@@ -27,11 +29,12 @@ function DiceMenu:addSkillPanelButtons(parent, skill, isInitialized, frameHeight
     btnSubSkills:instantiate()
     btnSubSkills:setEnable(true)
     self["btnSubSkills" .. skill] = btnSubSkills
-    parent:addChild(btnSubSkills)
+    container:addChild(btnSubSkills)
 
 end
 
 
+---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:render()
     ISCollapsableWindow.render(self)
 
@@ -51,6 +54,7 @@ end
 local og_DiceMenu_onOptionMouseDown = DiceMenu.onOptionMouseDown
 
 ---@param btn ISButton
+---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:onOptionMouseDown(btn)
     og_DiceMenu_onOptionMouseDown(self, btn)
 
