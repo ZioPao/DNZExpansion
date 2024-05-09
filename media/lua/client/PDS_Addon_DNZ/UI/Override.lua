@@ -7,7 +7,7 @@ local CommonUI = require("UI/DiceSystem_CommonUI")
 local og_DiceMenu_addSkillPanelLabel = DiceMenu.addSkillPanelLabel
 function DiceMenu:addSkillPanelLabel(parent, skill, x, frameHeight)
     -- Moves the Label a bit to the right to make space for the Side Btn
-    x = x + 30
+    x = CommonUI.BUTTON_WIDTH + 10
     og_DiceMenu_addSkillPanelLabel(self, parent, skill, x, frameHeight)
 end
 
@@ -19,7 +19,7 @@ function DiceMenu:addSkillPanelButtons(parent, skill, isInitialized, frameHeight
 
     -- Adding Side Panel Toggle button 
     local btnWidth = CommonUI.BUTTON_WIDTH/2
-    local btnSubSkills = ISButton:new(btnWidth, 0, btnWidth, frameHeight - 2, "<", self,
+    local btnSubSkills = ISButton:new(0, 0, btnWidth, frameHeight - 2, "<", self,
     self.onOptionMouseDown)
     btnSubSkills.internal = "SUB_SKILLS_PANEL"
     btnSubSkills.skill = skill
@@ -35,10 +35,14 @@ end
 function DiceMenu:render()
     ISCollapsableWindow.render(self)
 
-    -- Functioanlity to have side panel move with the rest of the menu
+    -- Functionality to have side panel move with the rest of the menu
     if self.openedPanel then
-        self.openedPanel:setX(self:getRight())
-        self.openedPanel:setY(self:getBottom() - self:getHeight())
+        -- Needs to be on the left side
+        local x = self:getAbsoluteX() - self:getWidth()
+        local y = self:getBottom() - self:getHeight()
+
+        self.openedPanel:setX(x)
+        self.openedPanel:setY(y)
     end
 end
 
