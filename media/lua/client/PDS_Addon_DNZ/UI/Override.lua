@@ -1,0 +1,59 @@
+if not getActivatedMods():contains("PandemoniumDiceSystem") then return end
+
+local DiceMenu = require("UI/DiceSystem_PlayerUI")
+local CommonUI = require("UI/DiceSystem_CommonUI")
+-----------------
+
+local og_DiceMenu_addSkillPanelLabel = DiceMenu.addSkillPanelLabel
+function DiceMenu:addSkillPanelLabel(parent, skill, x, frameHeight)
+    -- Moves the Label a bit to the right to make space for the Side Btn
+    x = x + 30
+    og_DiceMenu_addSkillPanelLabel(self, parent, skill, x, frameHeight)
+end
+
+
+
+local og_DiceMenu_addSkillPanelButtons = DiceMenu.addSkillPanelButtons
+function DiceMenu:addSkillPanelButtons(parent, skill, isInitialized, frameHeight, plUsername)
+    og_DiceMenu_addSkillPanelButtons(self, parent, skill, isInitialized, frameHeight, plUsername)
+
+    -- Adding Side Panel Toggle button 
+    local btnWidth = CommonUI.BUTTON_WIDTH/2
+    local btnSubSkills = ISButton:new(btnWidth, 0, btnWidth, frameHeight - 2, "<", self,
+    self.onOptionMouseDown)
+    btnSubSkills.internal = "SUB_SKILLS_PANEL"
+    btnSubSkills.skill = skill
+    btnSubSkills:initialise()
+    btnSubSkills:instantiate()
+    btnSubSkills:setEnable(true)
+    self["btnSubSkills" .. skill] = btnSubSkills
+    parent:addChild(btnSubSkills)
+
+end
+
+
+function DiceMenu:render()
+    ISCollapsableWindow.render(self)
+
+    -- Functioanlity to have side panel move with the rest of the menu
+    if self.openedPanel then
+        self.openedPanel:setX(self:getRight())
+        self.openedPanel:setY(self:getBottom() - self:getHeight())
+    end
+end
+
+
+
+local og_DiceMenu_onOptionMouseDown = DiceMenu.onOptionMouseDown
+
+---@param btn ISButton
+function DiceMenu:onOptionMouseDown(btn)
+    og_DiceMenu_onOptionMouseDown(self, btn)
+
+    if btn.internal == "SUB_SKILLS_PANEL" then
+        --TODO Open Sub Skills Panel for that skill
+        local skill = btn.skill
+
+        SubSkillsSubMenu.Toggle(self, skill, getPlayer(), "")
+    end
+end
