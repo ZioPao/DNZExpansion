@@ -82,22 +82,17 @@ function SubSkillsSubMenu:initialise()
     self:addToUIManager()
 end
 
-
-function SubSkillsSubMenu:addSkillPanel()
-
-
-end
-
-
-
 function SubSkillsSubMenu:createChildren()
     ISPanel.createChildren(self)
 
     -- Add sub skills related to that specific skill
 
     local subSkills = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill]
-    local yOffset = 0
+    --local y = 0
     local frameHeight = 40
+    local skillsAmount = #subSkills
+
+    local y = self:getHeight()/2 - (skillsAmount*frameHeight/2)
 
     -- TODO Make it work
     local isInitialized = false
@@ -105,14 +100,14 @@ function SubSkillsSubMenu:createChildren()
 
     for i=1, #subSkills do
         local subSkill = subSkills[i]
-        local skillPanel = CommonUI.CreateBaseSingleSkillPanel(self, subSkill, i % 2 ~= 0, yOffset, frameHeight)
+        local skillPanel = CommonUI.CreateBaseSingleSkillPanel(self, subSkill, i % 2 ~= 0, y, frameHeight)
 
         local xOffset = 10
         CommonUI.AddSkillPanelLabel(self, skillPanel, subSkill, xOffset, frameHeight)
         CommonUI.AddSkillPanelButtons(self, skillPanel, subSkill, isInitialized, frameHeight, plUsername)
         CommonUI.AddSkillPanelPoints(self, skillPanel, subSkill)
 
-        yOffset = yOffset + frameHeight
+        y = y + frameHeight
 
         self:addChild(skillPanel)
         --self:setHeight(self:getHeight() + frameHeight)

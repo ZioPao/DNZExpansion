@@ -19,7 +19,7 @@ function DiceMenu:addSkillPanelButtons(container, skill, isInitialized, frameHei
 
     -- Adding Side Panel Toggle button
     local btnWidth = CommonUI.BUTTON_WIDTH / 2
-    local btnSubSkills = ISButton:new(0, 0, btnWidth, frameHeight - 2, "<", self,
+    local btnSubSkills = ISButton:new(0, 0, btnWidth, frameHeight, "<", self,
         self.onOptionMouseDown)
     btnSubSkills.internal = "SUB_SKILLS_PANEL"
     btnSubSkills.skill = skill
@@ -123,4 +123,14 @@ function DiceMenu:update()
     local maxMorale = 1
 
     self:updatePanelLine("Morale", currentMorale, maxMorale)
+end
+
+local og_DiceMenu_close = DiceMenu.close
+function DiceMenu:close()
+
+    -- To close side panels when the main one closes
+    if self.openedPanel and self.openedPanel:getIsVisible() then
+        self.openedPanel:close()
+    end
+    og_DiceMenu_close(self)
 end
