@@ -84,3 +84,43 @@ function DiceMenu:addNameLabel(playerName, y)
     return y + height + 10
 
 end
+
+------------------------------------
+--* MORALE *--
+
+local og_DiceMenu_createChildren = DiceMenu.createChildren
+function DiceMenu:createChildren()
+    og_DiceMenu_createChildren(self)
+    local frameHeight = 40 * CommonUI.FONT_SCALE
+
+    --* Morale Line *--
+    local y = self.panelMovement:getY() + frameHeight
+    self:createPanelLine("Morale", y, frameHeight)
+
+
+    -- Move the skillPanelContainer a bit more down
+    local finalY = y + frameHeight*2
+    self.skillsPanelContainer:setY(finalY)
+    self:calculateHeight(finalY)
+
+    -- We need to move the bottom buttons a bit to align them correctly again
+
+    if self.btnConfirm then
+        self.btnConfirm:setY(self.height - 35)
+    end
+
+    self.btnClose:setY(self.height - 35)
+end
+
+
+
+local og_DiceMenu_update = DiceMenu.update
+function DiceMenu:update()
+    og_DiceMenu_update(self)
+
+    -- Placeholders
+    local currentMorale = 1
+    local maxMorale = 1
+
+    self:updatePanelLine("Morale", currentMorale, maxMorale)
+end
