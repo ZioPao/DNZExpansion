@@ -1,6 +1,9 @@
 require("UI/DiceSystem_AdminUI")
 
 
+-- TODO Add a level up indicator on the list?
+
+
 --Level up button
 
 local og_DiceMenuAdminViewer_createChildren = DiceMenuAdminViewer.createChildren
@@ -14,17 +17,17 @@ function DiceMenuAdminViewer:createChildren()
     local btnWidth = (self:getWidth() - self.panel:getWidth()) - 30 -- You must account for the padding, 10 and -20
     local btnHeight =  btnWidth / 1.5
 
-    local btnY = (self.panel:getHeight() / 2 - top) - btnHeight*2 - 10
+    local btnY = (self.panel:getHeight() / 2 - top) - btnHeight*2 - 10*2
     local btnX = self.panel:getRight() + 10
 
-
-    local openIco = getTexture("media/ui/openPanelIcon.png")        -- Document icons created by Freepik - Flaticon - Document
+    -- https://www.flaticon.com/free-icon/up-arrow_
+    local upArrowIco = getTexture("media/ui/upArrowIcon.png")
 
     self.btnLevelUp = ISButton:new(btnX, btnY, btnWidth, btnHeight, "", self,
         DiceMenuAdminViewer.onClick)
     self.btnLevelUp.internal = "LEVEL_UP"
-    self.btnLevelUp:setTooltip(getText("IGUI_Dice_OpenPanelTooltip"))
-    self.btnLevelUp:setImage(openIco)
+    self.btnLevelUp:setTooltip(getText("IGUI_Dice_LevelUpTooltip"))
+    self.btnLevelUp:setImage(upArrowIco)
     self.btnLevelUp.anchorTop = false
     self.btnLevelUp.anchorBottom = true
     self.btnLevelUp:initialise()
