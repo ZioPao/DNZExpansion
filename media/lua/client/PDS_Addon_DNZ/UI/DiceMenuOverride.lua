@@ -2,6 +2,7 @@ if not getActivatedMods():contains("PandemoniumDiceSystem") then return end
 
 local DiceMenu = require("UI/DiceSystem_PlayerUI")
 local CommonUI = require("UI/DiceSystem_CommonUI")
+require("PDS_Addon_DNZ/PlayerHandler")      -- To make sure that we're loading the modifications
 -----------------
 
 local og_DiceMenu_addSkillPanelLabel = DiceMenu.addSkillPanelLabel
@@ -71,8 +72,9 @@ function DiceMenu:addNameLabel(playerName, y)
     -- Add level under the name
     y = y - 10      -- Removes the padding
     local levelLabelId = "levelLabel"
-    local levelString = "LEVEL: 123"        -- TODO Placeholder
 
+    -- TODO Add Translation
+    local levelString = "LEVEL: " .. self.playerHandler:getCurrentLevel()
     local x = (self.width - getTextManager():MeasureStringX(UIFont.Medium, levelString)) / 2
     local height = 25
 
@@ -98,6 +100,11 @@ function DiceMenu:createChildren()
     self:createPanelLine("Morale", y, frameHeight)
 
 
+    -- TODO labelSkillpointsAllocated must be moved too 
+    -- self.labelSkillPointsAllocated:setName(pointsAllocatedString)
+
+
+
     -- Move the skillPanelContainer a bit more down
     local finalY = y + frameHeight*2
     self.skillsPanelContainer:setY(finalY)
@@ -117,6 +124,15 @@ end
 local og_DiceMenu_update = DiceMenu.update
 function DiceMenu:update()
     og_DiceMenu_update(self)
+
+    -- FIX Janky
+    local level = self.playerHandler:getCurrentLevel()
+    local levelString = "LEVEL: " .. tostring(level)
+
+    ---@type ISLabel
+    local levelLabel = self['levelLabel']
+    levelLabel:setName(levelString)
+
 
     -- Placeholders
     local currentMorale = 1
