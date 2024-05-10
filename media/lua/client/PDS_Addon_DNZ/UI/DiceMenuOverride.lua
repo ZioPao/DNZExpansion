@@ -16,7 +16,10 @@ end
 local og_DiceMenu_addSkillPanelButtons = DiceMenu.addSkillPanelButtons
 ---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:addSkillPanelButtons(container, skill, isInitialized, frameHeight, plUsername)
-    og_DiceMenu_addSkillPanelButtons(self, container, skill, isInitialized, frameHeight, plUsername)
+
+    --  Use isInitialized for levelingup thing
+    local showAssignButtons = isInitialized and not self.playerHandler:getIsLevelingUp()
+    og_DiceMenu_addSkillPanelButtons(self, container, skill, showAssignButtons, frameHeight, plUsername)
 
     -- Adding Side Panel Toggle button
     local btnWidth = CommonUI.BUTTON_WIDTH / 2
@@ -51,14 +54,21 @@ local og_DiceMenu_onOptionMouseDown = DiceMenu.onOptionMouseDown
 ---@param btn ISButton
 ---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:onOptionMouseDown(btn)
-    og_DiceMenu_onOptionMouseDown(self, btn)
 
+    if btn.internal == "SAVE" then
+        -- disable level up now that it's done
+        self.playerHandler:setIsLevelingUp(false)
+
+    end
     if btn.internal == "SUB_SKILLS_PANEL" then
         --TODO Open Sub Skills Panel for that skill
         local skill = btn.skill
 
         SubSkillsSubMenu.Toggle(self, skill, getPlayer(), "")
     end
+
+    og_DiceMenu_onOptionMouseDown(self, btn)
+
 end
 
 ----------------------
@@ -74,7 +84,7 @@ function DiceMenu:addNameLabel(playerName, y)
     local levelLabelId = "levelLabel"
 
     -- TODO Add Translation
-    local levelString = "LEVEL: " .. self.playerHandler:getCurrentLevel()
+    local levelString = "LEVEL: " .. self.playerHandler:getLevel()
     local x = (self.width - getTextManager():MeasureStringX(UIFont.Medium, levelString)) / 2
     local height = 25
 
@@ -125,8 +135,26 @@ local og_DiceMenu_update = DiceMenu.update
 function DiceMenu:update()
     og_DiceMenu_update(self)
 
+
+
+    -- -- FIX BAD
+    local isInitialized = self.playerHandler:isPlayerInitialized()
+    local allocatedPoints = self.playerHandler:getAllocatedSkillPoints()
+    local showAssignButtons = not isInitialized or self.playerHandler:getIsLevelingUp()
+
+    for i = 1, #PLAYER_DICE_VALUES.SKILLS do
+        local skill = PLAYER_DICE_VALUES.SKILLS[i]
+        local skillPoints = self.playerHandler:getSkillPoints(skill)
+
+        if showAssignButtons then
+            self["btnMinus" .. skill]:setEnable(skillPoints ~= 0)
+            self["btnPlus" .. skill]:setEnable(skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and allocatedPoints < self.playerHandler:getLevel())
+        end
+    end
+
+
     -- FIX Janky
-    local level = self.playerHandler:getCurrentLevel()
+    local level = self.playerHandler:getLevel()
     local levelString = "LEVEL: " .. tostring(level)
 
     ---@type ISLabel
@@ -139,6 +167,15 @@ function DiceMenu:update()
     local maxMorale = 1
 
     self:updatePanelLine("Morale", currentMorale, maxMorale)
+
+    -- TODO TEST ONLY!!!
+
+    -- Show allocated points during init
+    if showAssignButtons then
+        -- Points allocated label
+        local pointsAllocatedString = getText("IGUI_SkillPointsAllocated") .. string.format(" %d/%d", allocatedPoints, PLAYER_DICE_VALUES.MAX_ALLOCATED_POINTS)
+        self.labelSkillPointsAllocated:setName(pointsAllocatedString)
+    end
 end
 
 local og_DiceMenu_close = DiceMenu.close

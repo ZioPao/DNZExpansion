@@ -1,9 +1,11 @@
 
 ---@class PlayerHandler
+---@field handlers table
+---@field username string
+---@field diceData diceDataType_DNZ
 local PlayerHandler = require("DiceSystem_PlayerHandling")
 
 
----@alias diceDataType_DNZ {isInitialized : boolean, occupation : string, statusEffects : statusEffectsType, currentHealth : number, maxHealth : number, healthBonus : number, armorBonus : number, currentMovement : number, maxMovement : number, movementBonus : number, currentMorale : number, maxMorale : number, moraleBonus : number, allocatedPoints : number, skills : skillsTabType, skillsBonus : skillsBonusTabType}
 
 
 ---@cast DICE_CLIENT_MOD_DATA table<string, diceDataType_DNZ>
@@ -70,26 +72,99 @@ end
 ]]
 
 -----------------------
-function PlayerHandler:getCurrentLevel()
-    -- TODO Should return the max amount, not the allocated one
-    return self:getAllocatedSkillPoints()
+
+---@param isLevelingUp boolean
+function PlayerHandler:setIsLevelingUp(isLevelingUp)
+    -- Syncs it with server
+    DICE_CLIENT_MOD_DATA[self.username].isLevelingUp = isLevelingUp
+end
+
+function PlayerHandler:getIsLevelingUp()
+    if DICE_CLIENT_MOD_DATA[self.username] == nil then
+        error("Couldn't find player dice data!")
+        return
+    end
+
+    return DICE_CLIENT_MOD_DATA[self.username].isLevelingUp
+end
+
+
+function PlayerHandler:getLevel()
+    return DICE_CLIENT_MOD_DATA[self.username].level
+end
+
+
+---@param level number
+function PlayerHandler:setLevel(level)
+    DICE_CLIENT_MOD_DATA[self.username].level = level
+
 end
 
 function PlayerHandler:triggerLevelUp()
     -- check current level
-    if self:getCurrentLevel() > PLAYER_DICE_VALUES.MAX_LEVELS then
+    if self:getLevel() > PLAYER_DICE_VALUES.MAX_LEVELS then
         print("Max level reached")
         return
     end
 
+    if self:getIsLevelingUp() then
+        print("Already leveling up")
+        return
+    end
 
+    self:setIsLevelingUp(true)
+
+    -- Set new max amount of allocable points
+    local level = self:getLevel() + 1
+    self:setLevel(level)
+
+
+    -- Force close and reopen menu
+    local DiceMenu = require("UI/DiceSystem_PlayerUI")
+    DiceMenu.ClosePanel()
+    DiceMenu.OpenPanel(false, self.username)
 
 end
 
+---Increment a specific skillpoint
+---@param skill string
+---@return boolean
+function PlayerHandler:incrementSkillPoint(skill)
+    local result = false
 
+    -- TODO Make this customizable from DATA
+    if self.diceData.allocatedPoints < self.diceData.level and self.diceData.skills[skill] < PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS then
+        self.diceData.skills[skill] = self.diceData.skills[skill] + 1
+        self.diceData.allocatedPoints = self.diceData.allocatedPoints + 1
+        result = true
+    end
+
+    return result
+end
+
+---Decrement a specific skillpoint
+---@param skill string
+---@return boolean
+function PlayerHandler:decrementSkillPoint(skill)
+    local result = false
+
+    -- TODO Make this customizable from DATA
+
+    if self.diceData.skills[skill] > 0 then
+        self.diceData.skills[skill] = self.diceData.skills[skill] - 1
+        self.diceData.allocatedPoints = self.diceData.allocatedPoints - 1
+        result = true
+    end
+
+    return result
+end
 -- TODO Players should be able to accept or not a level up?
 
 
 -- Returns the modified PlayerHandler for DNZ
+
+-- local PH = require("PDS_Addon_DNZ/PlayerHandler")
+-- local x = PH:instantiate(getPlayer():getUsername())
+-- x:triggerLevelUp()
 
 return PlayerHandler
