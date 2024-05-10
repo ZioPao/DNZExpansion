@@ -1,0 +1,81 @@
+IG_UI_EN = {
+    IGUI_Occupation = "Professions",
+    IGUI_Ocptn_Paesant = "Paesant",
+    IGUI_Ocptn_FormerSlave = "Former Slave",
+    IGUI_Ocptn_Survivalist = "Survivalist",
+    IGUI_Ocptn_Artificer = "Artificer",
+    IGUI_Ocptn_Scribe = "Scribe",
+    IGUI_Ocptn_TravellingMerchant = "Travelling Merchant",
+    IGUI_Ocptn_Cowboy = "Cowboy",
+    IGUI_Ocptn_Tribesman = "Tribesman",
+    IGUI_Ocptn_Warrior = "Warrior",
+    IGUI_Ocptn_Squire = "Squire",
+    IGUI_Ocptn_Thief = "Thief",
+    IGUI_Ocptn_Healer = "Healer",
+    IGUI_Ocptn_Diplomat = "Diplomat",
+   
+
+    IGUI_StatusEffect = "Status Effect",
+    IGUI_StsEfct_Blinded = "Blinded",
+    IGUI_StsEfct_Deafened = "Deafened",
+    IGUI_StsEfct_Frightened = "Frightened",
+    IGUI_StsEfct_Grappled = "Grappled",
+    IGUI_StsEfct_Incapacitated = "Incapacitated",
+    IGUI_StsEfct_Poisoned = "Poisoned",
+    IGUI_StsEfct_Prone = "Prone",
+    IGUI_StsEfct_Stunned = "Stunned",
+    IGUI_StsEfct_Invisible = "Invisible",
+    IGUI_StsEfct_Bleeding = "Bleeding",
+    IGUI_StsEfct_Sneaking = "Sneaking",
+
+    IGUI_PlayerUI_Morale = " <CENTRE> Morale %1/%2",
+
+
+    IGUI_SkillPointsAllocated = "Skill Points Allocated",
+    IGUI_Skill_Body = "Body",
+    IGUI_Skill_Wisdom = "Wisdom",
+    IGUI_Skill_Intelligence = "Intelligence",
+    IGUI_Skill_Reflex = "Reflex",
+    IGUI_Skill_Charisma = "Charisma",
+    IGUI_Skill_Willpower = "Willpower",
+    IGUI_Skill_Luck = "Luck",
+
+    // SUB SKILLS
+    // Not skills per se, but for simplicity sake let's say they are
+
+    // Body
+    IGUI_Skill_Strength = "Strength",
+    IGUI_Skill_Athletics = "Athletics",
+    IGUI_Skill_Melee = "Melee",
+
+    // Wisdom
+    IGUI_Skill_Insight = "Insight",
+    IGUI_Skill_Perception = "Perception",
+    IGUI_Skill_FirstAid = "First Aid",
+
+    // Intelligence
+    IGUI_Skill_Religion = "Religion",
+    IGUI_Skill_History = "History",
+    IGUI_Skill_Tech = "Tech",
+
+    // Reflex
+    IGUI_Skill_Accuracy = "Accuracy",
+    IGUI_Skill_Evasion = "Evasion",
+    IGUI_Skill_Acrobatics = "Acrobatics",
+    IGUI_Skill_Stealth = "Stealth",
+    IGUI_Skill_Initiative = "Initiative",
+    IGUI_Skill_SleightOfHand = "Sleight Of Hand",
+
+    // Charisma
+    IGUI_Skill_Persuasion = "Persuasion",
+    IGUI_Skill_Intimidate = "Intimidate",
+    IGUI_Skill_Deception = "Deception",
+
+    // Willpower
+    IGUI_Skill_Psychic = "Psychic",
+
+
+    ///////////////////////////////////////////////
+    IGUI_Dice_LevelUpTooltip = "Level Up",
+
+}
