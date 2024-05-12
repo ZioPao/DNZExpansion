@@ -133,8 +133,8 @@ end
 
 -----------------------------------------
 
+---Updates label for the level, under player's name
 function DiceMenu:updateLevelLabel()
-    -- FIX Janky
     local level = self.playerHandler:getLevel()
     local levelString = "LEVEL: " .. tostring(level)
 
@@ -156,6 +156,7 @@ end
 
 
 function DiceMenu:updateBtnModifierSkill(skill, skillPoints, allocatedPoints)
+    --FIX Broken
     self["btnMinus" .. skill]:setEnable(skillPoints ~= 0)       -- FIX Should depend on current level for that skill, not 0
     self["btnPlus" .. skill]:setEnable(skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and allocatedPoints < self.playerHandler:getLevel())
 
