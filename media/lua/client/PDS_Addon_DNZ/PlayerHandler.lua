@@ -100,6 +100,8 @@ function PlayerHandler:setLevel(level)
     DICE_CLIENT_MOD_DATA[self.username].level = level
 
 end
+-- local PH = require("DiceSystem_PlayerHandling")
+-- print(PH:instantiate(getPlayer():getUsername()):isPlayerInitialized())
 
 function PlayerHandler:triggerLevelUp()
     -- check current level

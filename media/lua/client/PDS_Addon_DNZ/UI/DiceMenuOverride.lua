@@ -2,7 +2,7 @@ if not getActivatedMods():contains("PandemoniumDiceSystem") then return end
 
 local DiceMenu = require("UI/DiceSystem_PlayerUI")
 local CommonUI = require("UI/DiceSystem_CommonUI")
-require("PDS_Addon_DNZ/PlayerHandler")      -- To make sure that we're loading the modifications
+require("PDS_Addon_DNZ/PlayerHandler") -- To make sure that we're loading the modifications
 -----------------
 
 local og_DiceMenu_addSkillPanelLabel = DiceMenu.addSkillPanelLabel
@@ -16,9 +16,8 @@ end
 local og_DiceMenu_addSkillPanelButtons = DiceMenu.addSkillPanelButtons
 ---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:addSkillPanelButtons(container, skill, isInitialized, frameHeight, plUsername)
-
     --  Use isInitialized for levelingup thing
-    local showAssignButtons = isInitialized and not self.playerHandler:getIsLevelingUp()
+    local showAssignButtons = isInitialized or self.playerHandler:getIsLevelingUp()
     og_DiceMenu_addSkillPanelButtons(self, container, skill, showAssignButtons, frameHeight, plUsername)
 
     -- Adding Side Panel Toggle button
@@ -54,11 +53,9 @@ local og_DiceMenu_onOptionMouseDown = DiceMenu.onOptionMouseDown
 ---@param btn ISButton
 ---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:onOptionMouseDown(btn)
-
     if btn.internal == "SAVE" then
         -- disable level up now that it's done
         self.playerHandler:setIsLevelingUp(false)
-
     end
     if btn.internal == "SUB_SKILLS_PANEL" then
         --TODO Open Sub Skills Panel for that skill
@@ -68,7 +65,6 @@ function DiceMenu:onOptionMouseDown(btn)
     end
 
     og_DiceMenu_onOptionMouseDown(self, btn)
-
 end
 
 ----------------------
@@ -80,7 +76,7 @@ function DiceMenu:addNameLabel(playerName, y)
     y = og_DiceMenu_addNameLabel(self, playerName, y)
 
     -- Add level under the name
-    y = y - 10      -- Removes the padding
+    y = y - 10 -- Removes the padding
     local levelLabelId = "levelLabel"
 
     -- TODO Add Translation
@@ -94,7 +90,6 @@ function DiceMenu:addNameLabel(playerName, y)
     self:addChild(self[levelLabelId])
 
     return y + height + 10
-
 end
 
 ------------------------------------
@@ -110,13 +105,13 @@ function DiceMenu:createChildren()
     self:createPanelLine("Morale", y, frameHeight)
 
 
-    -- TODO labelSkillpointsAllocated must be moved too 
-    -- self.labelSkillPointsAllocated:setName(pointsAllocatedString)
+    -- TODO labelSkillpointsAllocated must be moved too
+    self.labelSkillPointsAllocated:setY(self.labelSkillPointsAllocated:getY() + frameHeight)
 
 
 
     -- Move the skillPanelContainer a bit more down
-    local finalY = y + frameHeight*2
+    local finalY = y + frameHeight * 2
     self.skillsPanelContainer:setY(finalY)
     self:calculateHeight(finalY)
 
@@ -128,8 +123,6 @@ function DiceMenu:createChildren()
 
     self.btnClose:setY(self.height - 35)
 end
-
-
 
 -----------------------------------------
 
@@ -143,33 +136,19 @@ function DiceMenu:updateLevelLabel()
     levelLabel:setName(levelString)
 end
 
-
-local og_DiceMenu_updateSkills = DiceMenu.updateSkills
-
-
----@param allocatedPoints number
----@param shouldModifyPoints boolean
-function DiceMenu:updateSkills(allocatedPoints, shouldModifyPoints)
-    shouldModifyPoints = shouldModifyPoints or self.playerHandler:getIsLevelingUp()
-    og_DiceMenu_updateSkills(self, allocatedPoints, shouldModifyPoints)
-end
-
-
 function DiceMenu:updateBtnModifierSkill(skill, skillPoints, allocatedPoints)
-    --FIX Broken
-    self["btnMinus" .. skill]:setEnable(skillPoints ~= 0)       -- FIX Should depend on current level for that skill, not 0
-    self["btnPlus" .. skill]:setEnable(skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and allocatedPoints < self.playerHandler:getLevel())
-
+    self["btnMinus" .. skill]:setEnable(skillPoints ~= 0) -- FIX Should depend on current level for that skill, not 0
+    self["btnPlus" .. skill]:setEnable(skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and
+    allocatedPoints < self.playerHandler:getLevel())
 end
-
 
 ---Full replace since we need to keep account of the level
----@param isModifying boolean
+---@param isEditing boolean
 ---@param allocatedPoints number
-function DiceMenu:updateAllocatedSkillPointsPanel(isModifying, allocatedPoints)
-    isModifying = isModifying or self.playerHandler:getIsLevelingUp()
+function DiceMenu:updateAllocatedSkillPointsPanel(isEditing, allocatedPoints)
+    --isEditing = isEditing or self.playerHandler:getIsLevelingUp()
 
-    if isModifying then
+    if isEditing then
         local pointsAllocatedString = getText("IGUI_SkillPointsAllocated") ..
             string.format(" %d/%d", allocatedPoints, self.playerHandler:getLevel())
         self.labelSkillPointsAllocated:setName(pointsAllocatedString)
@@ -178,12 +157,13 @@ function DiceMenu:updateAllocatedSkillPointsPanel(isModifying, allocatedPoints)
     end
 end
 
-
-
 local og_DiceMenu_update = DiceMenu.update
-function DiceMenu:update()
-    og_DiceMenu_update(self)
 
+---@param isEditing boolean
+function DiceMenu:update(isEditing)
+    isEditing = not self.playerHandler:isPlayerInitialized() or self:getIsAdminMode() or self.playerHandler:getIsLevelingUp()
+
+    og_DiceMenu_update(self, isEditing)
     self:updateLevelLabel()
 
     -- TODO Replace placeholders
@@ -191,12 +171,10 @@ function DiceMenu:update()
     local maxMorale = 1
 
     self:updatePanelLine("Morale", currentMorale, maxMorale)
-
 end
 
 local og_DiceMenu_close = DiceMenu.close
 function DiceMenu:close()
-
     -- To close side panels when the main one closes
     if self.openedPanel and self.openedPanel:getIsVisible() then
         self.openedPanel:close()
