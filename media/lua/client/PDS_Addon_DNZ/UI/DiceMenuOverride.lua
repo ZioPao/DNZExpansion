@@ -131,28 +131,9 @@ end
 
 
 
-local og_DiceMenu_update = DiceMenu.update
-function DiceMenu:update()
-    og_DiceMenu_update(self)
+-----------------------------------------
 
-
-
-    -- -- FIX BAD
-    local isInitialized = self.playerHandler:isPlayerInitialized()
-    local allocatedPoints = self.playerHandler:getAllocatedSkillPoints()
-    local showAssignButtons = not isInitialized or self.playerHandler:getIsLevelingUp()
-
-    for i = 1, #PLAYER_DICE_VALUES.SKILLS do
-        local skill = PLAYER_DICE_VALUES.SKILLS[i]
-        local skillPoints = self.playerHandler:getSkillPoints(skill)
-
-        if showAssignButtons then
-            self["btnMinus" .. skill]:setEnable(skillPoints ~= 0)
-            self["btnPlus" .. skill]:setEnable(skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and allocatedPoints < self.playerHandler:getLevel())
-        end
-    end
-
-
+function DiceMenu:updateLevelLabel()
     -- FIX Janky
     local level = self.playerHandler:getLevel()
     local levelString = "LEVEL: " .. tostring(level)
@@ -160,22 +141,56 @@ function DiceMenu:update()
     ---@type ISLabel
     local levelLabel = self['levelLabel']
     levelLabel:setName(levelString)
+end
 
 
-    -- Placeholders
+local og_DiceMenu_updateSkills = DiceMenu.updateSkills
+
+
+---@param allocatedPoints number
+---@param shouldModifyPoints boolean
+function DiceMenu:updateSkills(allocatedPoints, shouldModifyPoints)
+    shouldModifyPoints = shouldModifyPoints or self.playerHandler:getIsLevelingUp()
+    og_DiceMenu_updateSkills(self, allocatedPoints, shouldModifyPoints)
+end
+
+
+function DiceMenu:updateBtnModifierSkill(skill, skillPoints, allocatedPoints)
+    self["btnMinus" .. skill]:setEnable(skillPoints ~= 0)       -- FIX Should depend on current level for that skill, not 0
+    self["btnPlus" .. skill]:setEnable(skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and allocatedPoints < self.playerHandler:getLevel())
+
+end
+
+
+---Full replace since we need to keep account of the level
+---@param isModifying boolean
+---@param allocatedPoints number
+function DiceMenu:updateAllocatedSkillPointsPanel(isModifying, allocatedPoints)
+    isModifying = isModifying or self.playerHandler:getIsLevelingUp()
+
+    if isModifying then
+        local pointsAllocatedString = getText("IGUI_SkillPointsAllocated") ..
+            string.format(" %d/%d", allocatedPoints, self.playerHandler:getLevel())
+        self.labelSkillPointsAllocated:setName(pointsAllocatedString)
+    else
+        self.labelSkillPointsAllocated:setName("")
+    end
+end
+
+
+
+local og_DiceMenu_update = DiceMenu.update
+function DiceMenu:update()
+    og_DiceMenu_update(self)
+
+    self:updateLevelLabel()
+
+    -- TODO Replace placeholders
     local currentMorale = 1
     local maxMorale = 1
 
     self:updatePanelLine("Morale", currentMorale, maxMorale)
 
-    -- TODO TEST ONLY!!!
-
-    -- Show allocated points during init
-    if showAssignButtons then
-        -- Points allocated label
-        local pointsAllocatedString = getText("IGUI_SkillPointsAllocated") .. string.format(" %d/%d", allocatedPoints, PLAYER_DICE_VALUES.MAX_ALLOCATED_POINTS)
-        self.labelSkillPointsAllocated:setName(pointsAllocatedString)
-    end
 end
 
 local og_DiceMenu_close = DiceMenu.close

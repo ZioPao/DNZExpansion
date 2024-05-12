@@ -79,10 +79,11 @@ function PlayerHandler:setIsLevelingUp(isLevelingUp)
     DICE_CLIENT_MOD_DATA[self.username].isLevelingUp = isLevelingUp
 end
 
+---@return boolean
 function PlayerHandler:getIsLevelingUp()
     if DICE_CLIENT_MOD_DATA[self.username] == nil then
         error("Couldn't find player dice data!")
-        return
+        return false
     end
 
     return DICE_CLIENT_MOD_DATA[self.username].isLevelingUp
@@ -163,8 +164,5 @@ end
 
 -- Returns the modified PlayerHandler for DNZ
 
--- local PH = require("PDS_Addon_DNZ/PlayerHandler")
--- local x = PH:instantiate(getPlayer():getUsername())
--- x:triggerLevelUp()
 
 return PlayerHandler
