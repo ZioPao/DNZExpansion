@@ -7,6 +7,56 @@ local PlayerHandler = require("DiceSystem_PlayerHandling")
 
 ---@cast DICE_CLIENT_MOD_DATA table<string, diceDataType_DNZ>
 
+
+--* SUBSKILLS *--
+
+local og_PlayerHandler_setupModDataTable = PlayerHandler.setupModDataTable
+
+---@return table
+function PlayerHandler:setupModDataTable()
+    local tempTable = og_PlayerHandler_setupModDataTable(self)
+
+    -- Setup subskills
+    for skill, subSkillTable in pairs(PLAYER_DICE_VALUES.SUB_SKILLS) do
+        tempTable.subSkills[skill] = {}
+        tempTable.subSkillsBonus[skill] = {}
+        for i=1, #subSkillTable do
+            local subSkill = subSkillTable[i]
+            tempTable.subSkills[skill][subSkill] = 0
+            tempTable.subSkillsBonus[skill][subSkill] = 0
+
+        end
+    end
+
+    return tempTable
+end
+
+---@param skill string
+---@param subSkill string
+---@return integer
+function PlayerHandler:getSubSkillPoints(skill, subSkill)
+    if not self:checkDiceDataValidity() then return -1 end
+    return self.diceData.subSkills[skill][subSkill]
+end
+
+
+---@param skill string
+---@param subSkill string
+---@return integer
+function PlayerHandler:getSubSkillBonusPoints(skill, subSkill)
+    if not self:checkDiceDataValidity() then return -1 end
+    return self.diceData.subSkillsBonus[skill][subSkill]
+end
+
+
+---@param skill string
+---@param subSkill string
+---@return integer
+function PlayerHandler:getFullSubSkillPoints(skill, subSkill)
+    return self:getSubSkillPoints(skill, subSkill) + self:getSubSkillBonusPoints(skill, subSkill)
+end
+
+
 --* MORALE *--
 
 ---@return integer
@@ -93,9 +143,9 @@ end
     3) Set that the minus button should be available ONLY if the value of the skill point is higher than the starting amount (the old value before the level up)
 ]]
 
---------------------------
+--*****************--
 --* IMPORTANT NOTE
-
+--*****************--
 --[[
     For simplicity sake, allocatedPoints is gonna be the value that we will use
     to track levels, since it's gonna functiona basically the same.

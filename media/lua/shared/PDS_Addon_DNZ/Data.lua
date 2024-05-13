@@ -68,7 +68,7 @@ PLAYER_DICE_VALUES.MAX_ALLOCATED_POINTS = 0     -- Level 0
 PLAYER_DICE_VALUES.MAX_LEVELS = 50
 PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS = 10
 
----@alias diceDataType_DNZ {isInitialized : boolean, isLevelingUp : boolean, occupation : string, statusEffects : statusEffectsType, currentHealth : number, maxHealth : number, healthBonus : number, armorBonus : number, currentMovement : number, maxMovement : number, movementBonus : number, currentMorale : number, maxMorale : number, moraleBonus : number, allocatedPoints : number, level : number, skills : skillsTabType, skillsBonus : skillsBonusTabType}
+---@alias diceDataType_DNZ {isInitialized : boolean, isLevelingUp : boolean, occupation : string, statusEffects : statusEffectsType, currentHealth : number, maxHealth : number, healthBonus : number, armorBonus : number, currentMovement : number, maxMovement : number, movementBonus : number, currentMorale : number, maxMorale : number, moraleBonus : number, allocatedPoints : number, level : number, skills : skillsTabType, skillsBonus : skillsBonusTabType, subSkills : table, subSkillsBonus : {}}
 
 
 ---@type diceDataType_DNZ
@@ -98,7 +98,10 @@ PLAYER_DICE_VALUES.DEFAULT_MOD_TABLE = {
     level = 0,      -- Level 0    
 
     skills = {},
-    skillsBonus = {}
+    skillsBonus = {},
+
+    subSkills = {}, -- table with skill as id
+    subSkillsBonus = {}
 }
 
 -- TODO Set correct colors

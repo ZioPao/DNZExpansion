@@ -10,20 +10,18 @@ local CommonUI = require("UI/DiceSystem_CommonUI")
 
 ------------------
 ---@class SubSkillsSubMenu : ISCollapsableWindow
+---@field playerHandler PlayerHandler
 SubSkillsSubMenu = ISPanel:derive("SubSkillsSubMenu")
 
 
 
 --- Toggle the sub skill panel on the left of the dice menu
----@param pl IsoPlayer
----@param username string
 ---@param skill string
 ---@param parent ISPanel
-function SubSkillsSubMenu.Toggle(parent, skill, pl, username)
+function SubSkillsSubMenu.Toggle(parent, skill)
     --print("Toggling side panel for skill " .. skill)
     -- Check if side panel is already open
     if parent.openedPanel then
-
         --print("opened panel already exists")
         if parent.openedPanel:getIsVisible() then
             --print("closing it")
@@ -44,12 +42,11 @@ function SubSkillsSubMenu.Toggle(parent, skill, pl, username)
     local x = parent:getAbsoluteX() - width
     local y = parent:getBottom() - height
 
-    local sidePanel = SubSkillsSubMenu:new(x,y, width, height, skill)
+    local sidePanel = SubSkillsSubMenu:new(x, y, width, height, skill, parent)
     sidePanel:initialise()
     sidePanel:bringToTop()
 
     parent.openedPanel = sidePanel
-
 end
 
 --************************************--
@@ -60,8 +57,9 @@ end
 ---@param width number
 ---@param height number
 ---@param skill string
+---@param parent DiceMenu
 ---@return ISCollapsableWindow
-function SubSkillsSubMenu:new(x, y, width, height, skill)
+function SubSkillsSubMenu:new(x, y, width, height, skill, parent)
     local o = {}
     o = ISCollapsableWindow:new(x, y, width, height)
     setmetatable(o, self)
@@ -71,6 +69,7 @@ function SubSkillsSubMenu:new(x, y, width, height, skill)
     o.resizable = false
 
     o.skill = skill
+    o.parent = parent
 
     return o
 end
@@ -92,31 +91,105 @@ function SubSkillsSubMenu:createChildren()
     local frameHeight = 40
     local skillsAmount = #subSkills
 
-    local y = self:getHeight()/2 - (skillsAmount*frameHeight/2)
+    local y = self:getHeight() / 2 - (skillsAmount * frameHeight / 2)
 
-    -- TODO Make it work
-    local isInitialized = false
+    ---@type DiceMenu
+    local parent = self.parent      -- just to have a reference
+    local isEditing = not parent.playerHandler:isPlayerInitialized() or parent:getIsAdminMode() or parent.playerHandler:getIsLevelingUp()
     local plUsername = getPlayer():getUsername()
 
-    for i=1, #subSkills do
+    --print("Creating createChildren for subskills")
+    --print("isEditing: " .. tostring(isEditing))
+
+    for i = 1, #subSkills do
         local subSkill = subSkills[i]
         local skillPanel = CommonUI.CreateBaseSingleSkillPanel(self, subSkill, i % 2 ~= 0, y, frameHeight)
+        print(subSkill)
 
         local xOffset = 10
         CommonUI.AddSkillPanelLabel(self, skillPanel, subSkill, xOffset, frameHeight)
-        CommonUI.AddSkillPanelButtons(self, skillPanel, subSkill, isInitialized, frameHeight, plUsername)
-        CommonUI.AddSkillPanelPoints(self, skillPanel, subSkill)
+        CommonUI.AddSkillPanelButtons(self, skillPanel, parent.playerHandler, subSkill, isEditing, frameHeight, plUsername)
+        
+
+        -- -- We need to add another variable to the button, the "parent" of the subskill. Internally
+        -- -- we're still calling the subskill a "skill", so we're gonna have to call the "skill" something like
+        -- -- parentSKill
+        -- parent["btnPlus" .. subSkill].parentSkill = self.skill
+        
+        
+        
+        CommonUI.AddSkillPanelPointsLabel(self, skillPanel, subSkill)
 
         y = y + frameHeight
 
         self:addChild(skillPanel)
         --self:setHeight(self:getHeight() + frameHeight)
     end
-
 end
 
 function SubSkillsSubMenu:update()
     ISPanel.update(self)
+
+    ---@type DiceMenu
+    local parent = self.parent      -- just to have a reference
+
+
+    local allocatedPoints = parent.playerHandler:getAllocatedSkillPoints()
+    local isEditing = not parent.playerHandler:isPlayerInitialized() or parent:getIsAdminMode() or parent.playerHandler:getIsLevelingUp()
+
+
+    for i=1, #PLAYER_DICE_VALUES.SUB_SKILLS[self.skill] do
+        local subSkill = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill][i]
+        local subSkillPoints = parent.playerHandler:getSubSkillPoints(self.skill, subSkill)
+        local bonusSubSkillPoints = parent.playerHandler:getSubSkillBonusPoints(self.skill, subSkill)
+        local subSkillPointsString = " <RIGHT> " .. string.format("%d", subSkillPoints)
+        if bonusSubSkillPoints ~= 0 then
+            subSkillPointsString = subSkillPointsString ..
+                string.format(" <RGB:0.94,0.82,0.09> <SPACE> + <SPACE> %d", bonusSubSkillPoints)
+        end
+
+
+        --print(subSkill)
+        self["labelSkillPoints" .. subSkill]:setText(subSkillPointsString)
+        self["labelSkillPoints" .. subSkill].textDirty = true
+
+
+        -- Handles buttons to assign skill points
+        if isEditing then
+            -- TODO Dirty, since we're copying and pasting code from DiceMenu.
+            local enableMinus = subSkillPoints ~= 0 -- FIX Should depend on current level for that skill, not 0
+            local enablePlus = subSkillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and
+            allocatedPoints < parent.playerHandler:getLevel()
+            CommonUI.UpdateBtnSkillModifier(self, subSkill, enableMinus, enablePlus)
+        end
+
+    end
+
+
+
+end
+
+function SubSkillsSubMenu:onOptionMouseDown(btn)
+    ---@type PlayerHandler
+    local ph = self.parent.playerHandler
+    CommonUI.HandleButtons(btn, ph)
+
+
+    
+    if btn.internal == 'SKILL_ROLL' then
+
+        -- TODO This is really confusing
+
+        -- self.skill = CORE SKILL
+        -- btn.skill = SUB SKILL
+
+        local coreSkill = self.skill
+        local subSkill = btn.skill
+
+
+        local points = ph:getFullSubSkillPoints(coreSkill, subSkill)
+        DiceSystem_Common.Roll(btn.skill, points)
+    end
 end
 
 function SubSkillsSubMenu:prerender()
@@ -129,6 +202,5 @@ end
 
 function SubSkillsSubMenu:close()
     ISPanel.close(self)
+    self:removeFromUIManager()
 end
-
-

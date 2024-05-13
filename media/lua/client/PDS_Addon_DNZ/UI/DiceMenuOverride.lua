@@ -15,10 +15,10 @@ end
 
 local og_DiceMenu_addSkillPanelButtons = DiceMenu.addSkillPanelButtons
 ---@diagnostic disable-next-line: duplicate-set-field
-function DiceMenu:addSkillPanelButtons(container, skill, isInitialized, frameHeight, plUsername)
+function DiceMenu:addSkillPanelButtons(container, skill, isEditing, frameHeight, plUsername)
     --  Use isInitialized for levelingup thing
-    local showAssignButtons = isInitialized or self.playerHandler:getIsLevelingUp()
-    og_DiceMenu_addSkillPanelButtons(self, container, skill, showAssignButtons, frameHeight, plUsername)
+    isEditing = isEditing or self.playerHandler:getIsLevelingUp()
+    og_DiceMenu_addSkillPanelButtons(self, container, skill, isEditing, frameHeight, plUsername)
 
     -- Adding Side Panel Toggle button
     local btnWidth = CommonUI.BUTTON_WIDTH / 2
@@ -58,10 +58,8 @@ function DiceMenu:onOptionMouseDown(btn)
         self.playerHandler:setIsLevelingUp(false)
     end
     if btn.internal == "SUB_SKILLS_PANEL" then
-        --TODO Open Sub Skills Panel for that skill
         local skill = btn.skill
-
-        SubSkillsSubMenu.Toggle(self, skill, getPlayer(), "")
+        SubSkillsSubMenu.Toggle(self, skill)
     end
 
     og_DiceMenu_onOptionMouseDown(self, btn)
@@ -133,16 +131,16 @@ function DiceMenu:updateLevelLabel()
 end
 
 function DiceMenu:updateBtnModifierSkill(skill, skillPoints, allocatedPoints)
-    self["btnMinus" .. skill]:setEnable(skillPoints ~= 0) -- FIX Should depend on current level for that skill, not 0
-    self["btnPlus" .. skill]:setEnable(skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and
-    allocatedPoints < self.playerHandler:getLevel())
+    local enableMinus = skillPoints ~= 0    -- FIX Should depend on current level for that skill, not 0
+    local enablePlus = skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and allocatedPoints < self.playerHandler:getLevel()
+
+    CommonUI.UpdateBtnSkillModifier(self, skill, enableMinus, enablePlus)
 end
 
 ---Full replace since we need to keep account of the level
 ---@param isEditing boolean
 ---@param allocatedPoints number
 function DiceMenu:updateAllocatedSkillPointsPanel(isEditing, allocatedPoints)
-    --isEditing = isEditing or self.playerHandler:getIsLevelingUp()
 
     if isEditing then
         local pointsAllocatedString = getText("IGUI_SkillPointsAllocated") ..
