@@ -5,10 +5,35 @@
 ---@field diceData diceDataType_DNZ
 local PlayerHandler = require("DiceSystem_PlayerHandling")
 
-
-
-
 ---@cast DICE_CLIENT_MOD_DATA table<string, diceDataType_DNZ>
+
+--* MORALE *--
+
+---@return integer
+function PlayerHandler:getCurrentMorale()
+    if DICE_CLIENT_MOD_DATA and self.username and DICE_CLIENT_MOD_DATA[self.username] then
+        return DICE_CLIENT_MOD_DATA[self.username].currentMorale
+    end
+
+    return -1
+end
+
+
+---@return integer
+function PlayerHandler:getMaxMorale()
+    if DICE_CLIENT_MOD_DATA and self.username and DICE_CLIENT_MOD_DATA[self.username] then
+        return DICE_CLIENT_MOD_DATA[self.username].maxMorale
+    end
+
+    return -1
+end
+
+
+
+--******************************--
+
+
+
 
 ---@param points number
 ---@param bonusPoints number
@@ -21,8 +46,16 @@ end
 ---@param bonusPoints number
 function PlayerHandler:applyHealthBonus(points, bonusPoints)
     local bonus = math.floor((points + bonusPoints) / 2)
-    DICE_CLIENT_MOD_DATA[self.username].healthBonus = bonus
+    DICE_CLIENT_MOD_DATA[self.username].healthBonus = bonus     -- TODO What is this? Health Bonus? what
 end
+
+
+
+
+
+
+
+
 
 -- Override since we have different skills
 function PlayerHandler:handleSkillPointSpecialCases(skill)
@@ -42,7 +75,7 @@ function PlayerHandler:handleSkillPointSpecialCases(skill)
     end
 
     if skill == "Body" then
-        -- Every 2 points in Body grants +1 in Morale
+        -- Every 2 points in Body grants +1 in Health
         self:applyHealthBonus(actualPoints, bonusPoints)
         return
     end

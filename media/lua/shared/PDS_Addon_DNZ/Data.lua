@@ -80,6 +80,10 @@ PLAYER_DICE_VALUES.DEFAULT_MOD_TABLE = {
 
     currentHealth = PLAYER_DICE_VALUES.DEFAULT_HEALTH,
     maxHealth = PLAYER_DICE_VALUES.DEFAULT_HEALTH,
+    healthBonus = 0,
+
+
+
     armorBonus = 0,
 
     currentMovement = PLAYER_DICE_VALUES.DEFAULT_MOVEMENT,

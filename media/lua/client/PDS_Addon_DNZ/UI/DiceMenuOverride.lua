@@ -79,8 +79,7 @@ function DiceMenu:addNameLabel(playerName, y)
     y = y - 10 -- Removes the padding
     local levelLabelId = "levelLabel"
 
-    -- TODO Add Translation
-    local levelString = "LEVEL: " .. self.playerHandler:getLevel()
+    local levelString = getText("IGUI_Dice_Level", self.playerHandler:getLevel())
     local x = (self.width - getTextManager():MeasureStringX(UIFont.Medium, levelString)) / 2
     local height = 25
 
@@ -128,12 +127,9 @@ end
 
 ---Updates label for the level, under player's name
 function DiceMenu:updateLevelLabel()
-    local level = self.playerHandler:getLevel()
-    local levelString = "LEVEL: " .. tostring(level)
-
     ---@type ISLabel
     local levelLabel = self['levelLabel']
-    levelLabel:setName(levelString)
+    levelLabel:setName(getText("IGUI_Dice_Level", self.playerHandler:getLevel()))
 end
 
 function DiceMenu:updateBtnModifierSkill(skill, skillPoints, allocatedPoints)
@@ -166,9 +162,8 @@ function DiceMenu:update(isEditing)
     og_DiceMenu_update(self, isEditing)
     self:updateLevelLabel()
 
-    -- TODO Replace placeholders
-    local currentMorale = 1
-    local maxMorale = 1
+    local currentMorale = self.playerHandler:getCurrentMorale()
+    local maxMorale = self.playerHandler:getMaxMorale()
 
     self:updatePanelLine("Morale", currentMorale, maxMorale)
 end
