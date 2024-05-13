@@ -62,7 +62,7 @@ end
 ---@return boolean
 function PlayerHandler:increaseSubSkillPoint(coreSkill, subSkill)
     local result = false
-    if self.diceData.allocatedPoints < PLAYER_DICE_VALUES.MAX_ALLOCATED_POINTS and self.diceData.subSkills[coreSkill][subSkill] < PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS then
+    if self.diceData.allocatedPoints < self.diceData.level and self.diceData.subSkills[coreSkill][subSkill] < PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS then
         self.diceData.subSkills[coreSkill][subSkill] = self.diceData.subSkills[coreSkill][subSkill] + 1
         self.diceData.allocatedPoints = self.diceData.allocatedPoints + 1
         result = true
