@@ -62,15 +62,7 @@ end
 function DiceMenu:render()
     ISCollapsableWindow.render(self)
 
-    -- Functionality to have side panel move with the rest of the menu
-    if self.openedPanel then
-        -- Needs to be on the left side
-        local x = self:getAbsoluteX() - self:getWidth()
-        local y = self:getBottom() - self:getHeight()
 
-        self.openedPanel:setX(x)
-        self.openedPanel:setY(y)
-    end
 end
 
 local og_DiceMenu_onOptionMouseDown = DiceMenu.onOptionMouseDown
@@ -84,7 +76,11 @@ function DiceMenu:onOptionMouseDown(btn)
     end
     if btn.internal == "SUB_SKILLS_PANEL" then
         local skill = btn.skill
-        SubSkillsSubMenu.Toggle(self, skill)
+
+
+        -- center point is gonna be the button itself
+        local centerY = btn:getAbsoluteY() - btn:getHeight()/2
+        SubSkillsSubMenu.Toggle(self, btn, skill)
     end
 
     og_DiceMenu_onOptionMouseDown(self, btn)
