@@ -5,6 +5,32 @@ local CommonUI = require("UI/DiceSystem_CommonUI")
 require("PDS_Addon_DNZ/PlayerHandler") -- To make sure that we're loading the modifications
 -----------------
 
+
+
+
+--* ISEDITING OVERRIDE
+
+
+function DiceMenu:initialise()
+    ISCollapsableWindow.initialise(self)
+    self.isEditing = not self.playerHandler:isPlayerInitialized() or self:getIsAdminMode() or self.playerHandler:getIsLevelingUp()
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local og_DiceMenu_addSkillPanelLabel = DiceMenu.addSkillPanelLabel
 ---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:addSkillPanelLabel(container, skill, x, frameHeight)
@@ -101,11 +127,7 @@ function DiceMenu:createChildren()
     local y = self.panelMovement:getY() + frameHeight
     self:createPanelLine("Morale", y, frameHeight)
 
-
-    -- TODO labelSkillpointsAllocated must be moved too
     self.labelSkillPointsAllocated:setY(self.labelSkillPointsAllocated:getY() + frameHeight)
-
-
 
     -- Move the skillPanelContainer a bit more down
     local finalY = y + frameHeight * 2
@@ -113,7 +135,6 @@ function DiceMenu:createChildren()
     self:calculateHeight(finalY)
 
     -- We need to move the bottom buttons a bit to align them correctly again
-
     if self.btnConfirm then
         self.btnConfirm:setY(self.height - 35)
     end
@@ -155,9 +176,7 @@ local og_DiceMenu_update = DiceMenu.update
 
 ---@param isEditing boolean
 function DiceMenu:update(isEditing)
-    isEditing = not self.playerHandler:isPlayerInitialized() or self:getIsAdminMode() or self.playerHandler:getIsLevelingUp()
-
-    og_DiceMenu_update(self, isEditing)
+    og_DiceMenu_update(self)
     self:updateLevelLabel()
 
     local currentMorale = self.playerHandler:getCurrentMorale()
