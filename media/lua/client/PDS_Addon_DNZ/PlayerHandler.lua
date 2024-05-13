@@ -11,46 +11,45 @@ local PlayerHandler = require("DiceSystem_PlayerHandling")
 
 ---@return integer
 function PlayerHandler:getCurrentMorale()
-    if DICE_CLIENT_MOD_DATA and self.username and DICE_CLIENT_MOD_DATA[self.username] then
-        return DICE_CLIENT_MOD_DATA[self.username].currentMorale
-    end
-
-    return -1
+    return self:getCurrentStat("Morale")
 end
-
 
 ---@return integer
 function PlayerHandler:getMaxMorale()
-    if DICE_CLIENT_MOD_DATA and self.username and DICE_CLIENT_MOD_DATA[self.username] then
-        return DICE_CLIENT_MOD_DATA[self.username].maxMorale
-    end
-
-    return -1
+    return self:getMaxStat("Morale")
 end
 
-
-
---******************************--
-
-
-
+---Get the morale bonus
+---@return number
+function PlayerHandler:getMoraleBonus()
+    return self:getBonusStat("Morale")
+end
 
 ---@param points number
 ---@param bonusPoints number
 function PlayerHandler:applyMoraleBonus(points, bonusPoints)
     local bonus = math.floor((points + bonusPoints) / 2)
-    DICE_CLIENT_MOD_DATA[self.username].moraleBonus = bonus
+    self:setBonusStat("Morale", bonus)
 end
+
+--******************************--
+
+--* HEALTH BONUS *--
+
+---Get the health bonus
+---@return number
+function PlayerHandler:getHealthBonus()
+    return self:getBonusStat("Health")
+end
+
+
 
 ---@param points number
 ---@param bonusPoints number
-function PlayerHandler:applyHealthBonus(points, bonusPoints)
+function PlayerHandler:setHealthBonus(points, bonusPoints)
     local bonus = math.floor((points + bonusPoints) / 2)
-    DICE_CLIENT_MOD_DATA[self.username].healthBonus = bonus     -- TODO What is this? Health Bonus? what
+    self:setBonusStat("Health", bonus)
 end
-
-
-
 
 
 
@@ -76,7 +75,7 @@ function PlayerHandler:handleSkillPointSpecialCases(skill)
 
     if skill == "Body" then
         -- Every 2 points in Body grants +1 in Health
-        self:applyHealthBonus(actualPoints, bonusPoints)
+        self:setHealthBonus(actualPoints, bonusPoints)
         return
     end
 
