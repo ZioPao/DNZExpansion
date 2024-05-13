@@ -43,7 +43,6 @@ local og_DiceMenu_addSkillPanelButtons = DiceMenu.addSkillPanelButtons
 ---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:addSkillPanelButtons(container, skill, isEditing, frameHeight, plUsername)
     --  Use isInitialized for levelingup thing
-    isEditing = isEditing or self.playerHandler:getIsLevelingUp()
     og_DiceMenu_addSkillPanelButtons(self, container, skill, isEditing, frameHeight, plUsername)
 
     -- Adding Side Panel Toggle button
@@ -115,6 +114,18 @@ function DiceMenu:addNameLabel(playerName, y)
     return y + height + 10
 end
 
+--- Edited to enable the save button ONLY when we match the level
+---@param allocatedPoints number
+function DiceMenu:updateBottomPanelButtons(allocatedPoints)
+    if self.isEditing then
+        -- Save button
+        self.btnConfirm:setEnable(allocatedPoints == self.playerHandler:getLevel())
+    end
+end
+
+
+
+
 ------------------------------------
 --* MORALE *--
 
@@ -159,11 +170,10 @@ function DiceMenu:updateBtnModifierSkill(skill, skillPoints, allocatedPoints)
 end
 
 ---Full replace since we need to keep account of the level
----@param isEditing boolean
 ---@param allocatedPoints number
-function DiceMenu:updateAllocatedSkillPointsPanel(isEditing, allocatedPoints)
+function DiceMenu:updateAllocatedSkillPointsPanel(allocatedPoints)
 
-    if isEditing then
+    if self.isEditing then
         local pointsAllocatedString = getText("IGUI_SkillPointsAllocated") ..
             string.format(" %d/%d", allocatedPoints, self.playerHandler:getLevel())
         self.labelSkillPointsAllocated:setName(pointsAllocatedString)
@@ -174,8 +184,7 @@ end
 
 local og_DiceMenu_update = DiceMenu.update
 
----@param isEditing boolean
-function DiceMenu:update(isEditing)
+function DiceMenu:update()
     og_DiceMenu_update(self)
     self:updateLevelLabel()
 

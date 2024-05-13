@@ -49,12 +49,67 @@ function PlayerHandler:getSubSkillBonusPoints(skill, subSkill)
 end
 
 
----@param skill string
+---@param coreSkill string
 ---@param subSkill string
 ---@return integer
-function PlayerHandler:getFullSubSkillPoints(skill, subSkill)
-    return self:getSubSkillPoints(skill, subSkill) + self:getSubSkillBonusPoints(skill, subSkill)
+function PlayerHandler:getFullSubSkillPoints(coreSkill, subSkill)
+    return self:getSubSkillPoints(coreSkill, subSkill) + self:getSubSkillBonusPoints(coreSkill, subSkill)
 end
+
+---Increment a specific sub skillpoint
+---@param coreSkill string
+---@param subSkill string
+---@return boolean
+function PlayerHandler:increaseSubSkillPoint(coreSkill, subSkill)
+    local result = false
+    if self.diceData.allocatedPoints < PLAYER_DICE_VALUES.MAX_ALLOCATED_POINTS and self.diceData.subSkills[coreSkill][subSkill] < PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS then
+        self.diceData.subSkills[coreSkill][subSkill] = self.diceData.subSkills[coreSkill][subSkill] + 1
+        self.diceData.allocatedPoints = self.diceData.allocatedPoints + 1
+        result = true
+    end
+
+    return result
+end
+
+---Decrement a specific skillpoint
+---@param coreSkill string
+---@param subSkill string
+---@return boolean
+function PlayerHandler:decreaseSubSkillPoint(coreSkill, subSkill)
+    local result = false
+    if self.diceData.subSkills[coreSkill][subSkill] > 0 then
+        self.diceData.subSkills[coreSkill][subSkill] = self.diceData.subSkills[coreSkill][subSkill] - 1
+        self.diceData.allocatedPoints = self.diceData.allocatedPoints - 1
+        result = true
+    end
+
+    return result
+end
+
+
+
+---Add or subtract to any subskill point for this user
+---@param coreSkill string
+---@param subSkill string
+---@param operation string
+---@return boolean
+function PlayerHandler:handleSubSkillPoint(coreSkill, subSkill, operation)
+    local result = false
+
+    if operation == "+" then
+        result = self:increaseSubSkillPoint(coreSkill, subSkill)
+    elseif operation == "-" then
+        result = self:decreaseSubSkillPoint(coreSkill, subSkill)
+    end
+
+    -- In case of failure, just return.
+    if not result then return false end
+
+    return result
+end
+
+
+
 
 
 --* MORALE *--
@@ -77,7 +132,7 @@ end
 
 ---@param points number
 ---@param bonusPoints number
-function PlayerHandler:applyMoraleBonus(points, bonusPoints)
+function PlayerHandler:setMoraleBonus(points, bonusPoints)
     local bonus = math.floor((points + bonusPoints) / 2)
     self:setBonusStat("Morale", bonus)
 end
@@ -113,13 +168,13 @@ function PlayerHandler:handleSkillPointSpecialCases(skill)
     local bonusPoints = self:getBonusSkillPoints(skill)
 
     if skill == 'Reflex' then
-        self:applyMovementBonus(actualPoints, bonusPoints)
+        self:setMovementBonus(actualPoints, bonusPoints)
         return
     end
 
     if skill == "Willpower" then
         -- Every 2 points in Willpower grants +1 in Morale
-        self:applyMoraleBonus(actualPoints, bonusPoints)
+        self:setMoraleBonus(actualPoints, bonusPoints)
         return
     end
 
@@ -214,10 +269,8 @@ end
 ---Increment a specific skillpoint
 ---@param skill string
 ---@return boolean
-function PlayerHandler:incrementSkillPoint(skill)
+function PlayerHandler:increaseSkillPoint(skill)
     local result = false
-
-    -- TODO Make this customizable from DATA
     if self.diceData.allocatedPoints < self.diceData.level and self.diceData.skills[skill] < PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS then
         self.diceData.skills[skill] = self.diceData.skills[skill] + 1
         self.diceData.allocatedPoints = self.diceData.allocatedPoints + 1
@@ -230,11 +283,8 @@ end
 ---Decrement a specific skillpoint
 ---@param skill string
 ---@return boolean
-function PlayerHandler:decrementSkillPoint(skill)
+function PlayerHandler:decreaseSkillPoint(skill)
     local result = false
-
-    -- TODO Make this customizable from DATA
-
     if self.diceData.skills[skill] > 0 then
         self.diceData.skills[skill] = self.diceData.skills[skill] - 1
         self.diceData.allocatedPoints = self.diceData.allocatedPoints - 1

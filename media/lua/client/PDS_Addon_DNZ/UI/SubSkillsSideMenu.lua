@@ -172,21 +172,18 @@ end
 function SubSkillsSubMenu:onOptionMouseDown(btn)
     ---@type PlayerHandler
     local ph = self.parent.playerHandler
-    CommonUI.HandleButtons(btn, ph)
 
+    -- TODO This is really confusing
 
-    
-    if btn.internal == 'SKILL_ROLL' then
-
-        -- TODO This is really confusing
-
-        -- self.skill = CORE SKILL
-        -- btn.skill = SUB SKILL
-
-        local coreSkill = self.skill
-        local subSkill = btn.skill
-
-
+    -- self.skill = CORE SKILL
+    -- btn.skill = SUB SKILL
+    local coreSkill = self.skill
+    local subSkill = btn.skill
+    if btn.internal == 'PLUS_SKILL' then
+        ph:handleSubSkillPoint(coreSkill, subSkill, "+")
+    elseif btn.internal == 'MINUS_SKILL' then
+        ph:handleSubSkillPoint(coreSkill, subSkill, "-")
+    elseif btn.internal == 'SKILL_ROLL' then
         local points = ph:getFullSubSkillPoints(coreSkill, subSkill)
         DiceSystem_Common.Roll(btn.skill, points)
     end
