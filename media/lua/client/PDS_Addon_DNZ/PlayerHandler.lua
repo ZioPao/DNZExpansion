@@ -295,12 +295,14 @@ function PlayerHandler:getSpecialSkillPoints(skill)
 
     -- In theory, we could show the morale bonus and the health bonus too, but we won't to
     -- let the UI breathe
+    local specialPoints = 0
+    if skill == "Reflex" then
 
-    if skill == 'Reflex' then
-        local actualPoints = self:getSkillPoints(skill)
-        local bonusPoints = self:getBonusSkillPoints(skill)
-        self:setMovementBonus(actualPoints, bonusPoints)
+        -- Reflex has a bonus with Armor Bonus
+        specialPoints = self:getBonusStat("Armor")
     end
+
+    return specialPoints
 end
 
 
