@@ -117,6 +117,10 @@ function PlayerHandler:getMaxMorale()
     return self:getMaxStat("Morale")
 end
 
+function PlayerHandler:getTotalMorale()
+    return self:getMaxMorale() + self:getMoraleBonus()
+end
+
 ---Get the morale bonus
 ---@return number
 function PlayerHandler:getMoraleBonus()
@@ -147,6 +151,10 @@ function PlayerHandler:setHealthBonus(points, bonusPoints)
     self:setBonusStat("Health", bonus)
 end
 
+---Override to account for Health Bonus
+function PlayerHandler:getTotalHealth()
+    return self:getMaxHealth() + self:getHealthBonus()
+end
 
 -----------------------
 --* Level up *--
@@ -284,6 +292,10 @@ end
 
 ---@param skill string
 function PlayerHandler:getSpecialSkillPoints(skill)
+
+    -- In theory, we could show the morale bonus and the health bonus too, but we won't to
+    -- let the UI breathe
+
     if skill == 'Reflex' then
         local actualPoints = self:getSkillPoints(skill)
         local bonusPoints = self:getBonusSkillPoints(skill)

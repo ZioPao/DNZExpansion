@@ -178,9 +178,8 @@ function DiceMenu:update()
     self:updateLevelLabel()
 
     local currentMorale = self.playerHandler:getCurrentMorale()
-    local maxMorale = self.playerHandler:getMaxMorale()
-
-    self:updatePanelLine("Morale", currentMorale, maxMorale)
+    local totalMorale = self.playerHandler:getTotalMorale()
+    self:updatePanelLine("Morale", currentMorale, totalMorale)
 end
 
 ---Updates label for the level, under player's name
