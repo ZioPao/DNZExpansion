@@ -167,7 +167,7 @@ function SubSkillsSubMenu:update()
         -- Handles buttons to assign skill points
         if isEditing then
             -- TODO Dirty, since we're copying and pasting code from DiceMenu.
-            local enableMinus = subSkillPoints ~= 0 -- FIX Should depend on current level for that skill, not 0
+            local enableMinus = subSkillPoints ~= parent.oldSkills[subSkill]
             local enablePlus = subSkillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and
                 allocatedPoints < parent.playerHandler:getLevel()
             CommonUI.UpdateBtnSkillModifier(self, subSkill, enableMinus, enablePlus)
