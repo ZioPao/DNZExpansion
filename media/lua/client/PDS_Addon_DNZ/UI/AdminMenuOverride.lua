@@ -42,6 +42,7 @@ local og_DiceMenuAdminViewer_onClick = DiceMenuAdminViewer.onClick
 
 
 ---@param button ISButton
+---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenuAdminViewer:onClick(button)
     og_DiceMenuAdminViewer_onClick(self, button)
 
@@ -57,6 +58,7 @@ function DiceMenuAdminViewer:onClick(button)
             local playerID = selectedPlayer:getOnlineID()
 
             print("level up for selected player")
+            sendClientCommand(DICE_SYSTEM_ADDON_DNZ_MOD_STRING, "RelayLevelUp", {userID = playerID})
 
         end)
     end

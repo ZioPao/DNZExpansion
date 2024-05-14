@@ -108,7 +108,7 @@ function SubSkillsSubMenu:createChildren()
     for i = 1, #subSkills do
         local subSkill = subSkills[i]
         local skillPanel = CommonUI.CreateBaseSingleSkillPanel(self, subSkill, i % 2 ~= 0, y, frameHeight)
-        print(subSkill)
+        --print(subSkill)
 
         local xOffset = 10
         CommonUI.AddSkillPanelLabel(self, skillPanel, subSkill, xOffset, frameHeight)

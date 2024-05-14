@@ -220,6 +220,11 @@ function PlayerHandler:triggerLevelUp()
     DiceMenu.ClosePanel()
     DiceMenu.OpenPanel(false, self.username)
 
+
+    -- Notify server that the player is leveling up
+
+    
+
 end
 
 ---Increment a specific skillpoint
