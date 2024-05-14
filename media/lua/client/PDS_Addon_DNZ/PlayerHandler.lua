@@ -1,11 +1,9 @@
+---@cast DICE_CLIENT_MOD_DATA table<string, diceDataType_DNZ>
 
 ---@class PlayerHandler
----@field handlers table
----@field username string
 ---@field diceData diceDataType_DNZ
 local PlayerHandler = require("DiceSystem_PlayerHandling")
-
----@cast DICE_CLIENT_MOD_DATA table<string, diceDataType_DNZ>
+---------------------------------------
 
 
 --* SUBSKILLS *--
@@ -157,37 +155,6 @@ function PlayerHandler:setHealthBonus(points, bonusPoints)
 end
 
 
-
-
-
-
--- Override since we have different skills
-function PlayerHandler:handleSkillPointSpecialCases(skill)
-
-    local actualPoints = self:getSkillPoints(skill)
-    local bonusPoints = self:getBonusSkillPoints(skill)
-
-    if skill == 'Reflex' then
-        self:setMovementBonus(actualPoints, bonusPoints)
-        return
-    end
-
-    if skill == "Willpower" then
-        -- Every 2 points in Willpower grants +1 in Morale
-        self:setMoraleBonus(actualPoints, bonusPoints)
-        return
-    end
-
-    if skill == "Body" then
-        -- Every 2 points in Body grants +1 in Health
-        self:setHealthBonus(actualPoints, bonusPoints)
-        return
-    end
-
-end
-
-
-
 -----------------------
 --* Level up *--
 --[[
@@ -227,6 +194,7 @@ function PlayerHandler:getIsLevelingUp()
 end
 
 
+---@return number
 function PlayerHandler:getLevel()
     return DICE_CLIENT_MOD_DATA[self.username].level
 end
@@ -237,8 +205,7 @@ function PlayerHandler:setLevel(level)
     DICE_CLIENT_MOD_DATA[self.username].level = level
 
 end
--- local PH = require("DiceSystem_PlayerHandling")
--- print(PH:instantiate(getPlayer():getUsername()):isPlayerInitialized())
+
 
 function PlayerHandler:triggerLevelUp()
     -- check current level
@@ -294,6 +261,36 @@ function PlayerHandler:decreaseSkillPoint(skill)
     return result
 end
 -- TODO Players should be able to accept or not a level up?
+
+
+
+--* VARIOUS *--
+
+--- Override since we have different skills
+---@param skill string
+function PlayerHandler:handleSkillPointSpecialCases(skill)
+
+    local actualPoints = self:getSkillPoints(skill)
+    local bonusPoints = self:getBonusSkillPoints(skill)
+
+    if skill == 'Reflex' then
+        self:setMovementBonus(actualPoints, bonusPoints)
+        return
+    end
+
+    if skill == "Willpower" then
+        -- Every 2 points in Willpower grants +1 in Morale
+        self:setMoraleBonus(actualPoints, bonusPoints)
+        return
+    end
+
+    if skill == "Body" then
+        -- Every 2 points in Body grants +1 in Health
+        self:setHealthBonus(actualPoints, bonusPoints)
+        return
+    end
+
+end
 
 
 -- Returns the modified PlayerHandler for DNZ

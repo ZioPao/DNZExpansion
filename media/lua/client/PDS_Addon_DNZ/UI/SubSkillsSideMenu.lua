@@ -1,7 +1,5 @@
 if not getActivatedMods():contains("PandemoniumDiceSystem") then return end
 
--- Caching stuff
-local playerBase = __classmetatables[IsoPlayer.class].__index
 local CommonUI = require("UI/DiceSystem_CommonUI")
 
 
@@ -10,9 +8,7 @@ local CommonUI = require("UI/DiceSystem_CommonUI")
 ---@field playerHandler PlayerHandler
 ---@field parent DiceMenu
 ---@field startingBtn ISButton
-SubSkillsSubMenu = ISPanel:derive("SubSkillsSubMenu")
-
-
+local SubSkillsSubMenu = ISPanel:derive("SubSkillsSubMenu")
 
 --- Toggle the sub skill panel on the left of the dice menu
 ---@param skill string
@@ -219,3 +215,6 @@ function SubSkillsSubMenu:close()
     ISPanel.close(self)
     self:removeFromUIManager()
 end
+
+
+return SubSkillsSubMenu
