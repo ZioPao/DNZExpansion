@@ -84,8 +84,6 @@ function PlayerHandler:decreaseSubSkillPoint(coreSkill, subSkill)
     return result
 end
 
-
-
 ---Add or subtract to any subskill point for this user
 ---@param coreSkill string
 ---@param subSkill string
@@ -105,9 +103,6 @@ function PlayerHandler:handleSubSkillPoint(coreSkill, subSkill, operation)
 
     return result
 end
-
-
-
 
 
 --* MORALE *--
@@ -144,8 +139,6 @@ end
 function PlayerHandler:getHealthBonus()
     return self:getBonusStat("Health")
 end
-
-
 
 ---@param points number
 ---@param bonusPoints number
@@ -185,25 +178,21 @@ end
 
 ---@return boolean
 function PlayerHandler:getIsLevelingUp()
-    if DICE_CLIENT_MOD_DATA[self.username] == nil then
-        error("Couldn't find player dice data!")
-        return false
-    end
-
-    return DICE_CLIENT_MOD_DATA[self.username].isLevelingUp
+    if not self:checkDiceDataValidity() then return false end
+    return self.diceData.isLevelingUp
 end
 
 
 ---@return number
 function PlayerHandler:getLevel()
-    return DICE_CLIENT_MOD_DATA[self.username].level
+    if not self:checkDiceDataValidity() then return -1 end
+    return self.diceData.level
 end
 
 
 ---@param level number
 function PlayerHandler:setLevel(level)
-    DICE_CLIENT_MOD_DATA[self.username].level = level
-
+    self.diceData.level = level
 end
 
 

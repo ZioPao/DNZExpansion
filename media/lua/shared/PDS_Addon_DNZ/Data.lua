@@ -104,6 +104,9 @@ PLAYER_DICE_VALUES.DEFAULT_MOD_TABLE = {
 
     subSkills = {}, -- table with skill as id
     subSkillsBonus = {}
+
+
+    -- We want to keep track of the status of the skills before assigning them...????????
 }
 
 COLORS_DICE_TABLES = {

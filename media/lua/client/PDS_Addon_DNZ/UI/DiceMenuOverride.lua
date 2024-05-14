@@ -81,12 +81,30 @@ function DiceMenu:addSkillPanelButtons(container, skill, isEditing, frameHeight,
 end
 
 --* ISEDITING OVERRIDE
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:initialise()
     ISCollapsableWindow.initialise(self)
 
     -- isEditing needs to account for the leveling up stuff
     self.isEditing = not self.playerHandler:isPlayerInitialized() or self:getIsAdminMode() or self.playerHandler:getIsLevelingUp()
+
+    if self.isEditing then
+        -- Saves a reference of the old skills values to have a bottom val instead of 0
+
+        self.oldSkills = {}
+        -- cycle through skills
+        for i = 1, #PLAYER_DICE_VALUES.SKILLS do
+            local skill = PLAYER_DICE_VALUES.SKILLS[i]
+            self.oldSkills[skill] = self.playerHandler:getSkillPoints(skill)
+
+            for j=1, #PLAYER_DICE_VALUES.SUB_SKILLS[skill] do
+                local subSkill = PLAYER_DICE_VALUES.SUB_SKILLS[skill][j]
+                self.oldSkills[subSkill] = self.playerHandler:getSubSkillPoints(skill, subSkill)
+            end
+
+        end
+    end
 end
 
 
@@ -125,12 +143,16 @@ function DiceMenu:updateBottomPanelButtons(allocatedPoints)
 end
 
 
----@param skill string
+---@param skill string      could be a subskill or a core skill
 ---@param skillPoints number
 ---@param allocatedPoints number
 ---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:updateBtnModifierSkill(skill, skillPoints, allocatedPoints)
-    local enableMinus = skillPoints ~= 0    -- FIX Should depend on current level for that skill, not 0
+
+    -- TODO We need a separate table to keep track of the oldSkills... fucking helllllllllllllllllllllllllllllllllllllllllllllll
+
+
+    local enableMinus = skillPoints ~= self.oldSkills[skill]
     local enablePlus = skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and allocatedPoints < self.playerHandler:getLevel()
 
     CommonUI.UpdateBtnSkillModifier(self, skill, enableMinus, enablePlus)
