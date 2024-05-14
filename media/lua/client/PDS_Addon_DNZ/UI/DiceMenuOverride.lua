@@ -187,7 +187,21 @@ end
 function DiceMenu:updateLevelLabel()
     ---@type ISLabel
     local levelLabel = self['levelLabel']
-    levelLabel:setName(getText("IGUI_Dice_Level", self.playerHandler:getLevel()))
+    local x
+    local string
+
+    if self.playerHandler:getIsLevelingUp() then
+        string = getText("IGUI_Dice_NewLevel", self.playerHandler:getLevel())
+        levelLabel:setColor(0, 1, 0)  -- Green color for leveling up
+    else
+        string = getText("IGUI_Dice_Level", self.playerHandler:getLevel())
+        levelLabel:setColor(1,1,1)
+    end
+
+    x = (self.width - getTextManager():MeasureStringX(UIFont.Medium, string)) / 2
+    levelLabel:setX(x)
+    levelLabel:setName(string)
+
 end
 
 
