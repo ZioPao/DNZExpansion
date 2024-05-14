@@ -282,6 +282,15 @@ function PlayerHandler:handleSkillPointSpecialCases(skill)
 
 end
 
+---@param skill string
+function PlayerHandler:getSpecialSkillPoints(skill)
+    if skill == 'Reflex' then
+        local actualPoints = self:getSkillPoints(skill)
+        local bonusPoints = self:getBonusSkillPoints(skill)
+        self:setMovementBonus(actualPoints, bonusPoints)
+    end
+end
+
 
 -- Returns the modified PlayerHandler for DNZ
 
