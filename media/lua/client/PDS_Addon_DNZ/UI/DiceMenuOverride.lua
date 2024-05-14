@@ -189,11 +189,13 @@ function DiceMenu:updateLevelLabel()
     local x
     local string
 
+    local level = self.playerHandler:getLevel() + 1     -- 0 internally, add 1 for display
+
     if self.playerHandler:getIsLevelingUp() then
-        string = getText("IGUI_Dice_NewLevel", self.playerHandler:getLevel())
+        string = getText("IGUI_Dice_NewLevel",level)
         levelLabel:setColor(0, 1, 0)  -- Green color for leveling up
     else
-        string = getText("IGUI_Dice_Level", self.playerHandler:getLevel())
+        string = getText("IGUI_Dice_Level", level)
         levelLabel:setColor(1,1,1)
     end
 
