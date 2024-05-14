@@ -1,4 +1,4 @@
--- Mirror of DiceSystem_Data
+DICE_SYSTEM_ADDON_DNZ_MOD_STRING = "PDS_ADDON_DNZ"
 
 require("DiceSystem_Data")
 
@@ -61,6 +61,50 @@ PLAYER_DICE_VALUES.STATUS_EFFECTS = {
     "Bleeding", "Sneaking"
 }
 
+
+
+PLAYER_DICE_VALUES.DEFAULT_HEALTH = 5
+PLAYER_DICE_VALUES.DEFAULT_MOVEMENT = 5
+PLAYER_DICE_VALUES.DEFAULT_MORALE = 1
+PLAYER_DICE_VALUES.MAX_ALLOCATED_POINTS = 0     -- Level 0
+PLAYER_DICE_VALUES.MAX_LEVELS = 50
+PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS = 10
+
+---@alias diceDataType_DNZ {isInitialized : boolean, isLevelingUp : boolean, occupation : string, statusEffects : statusEffectsType, currentHealth : number, maxHealth : number, healthBonus : number, armorBonus : number, currentMovement : number, maxMovement : number, movementBonus : number, currentMorale : number, maxMorale : number, moraleBonus : number, allocatedPoints : number, level : number, skills : skillsTabType, skillsBonus : skillsBonusTabType, subSkills : table, subSkillsBonus : {}}
+
+
+---@type diceDataType_DNZ
+PLAYER_DICE_VALUES.DEFAULT_MOD_TABLE = {
+    isInitialized = false,
+    isLevelingUp = false,
+    occupation = "",
+    statusEffects = {},
+
+    currentHealth = PLAYER_DICE_VALUES.DEFAULT_HEALTH,
+    maxHealth = PLAYER_DICE_VALUES.DEFAULT_HEALTH,
+    healthBonus = 0,
+
+
+
+    armorBonus = 0,
+
+    currentMovement = PLAYER_DICE_VALUES.DEFAULT_MOVEMENT,
+    maxMovement = PLAYER_DICE_VALUES.DEFAULT_MOVEMENT,
+    movementBonus = 0,
+
+    currentMorale = PLAYER_DICE_VALUES.DEFAULT_MORALE,
+    maxMorale = PLAYER_DICE_VALUES.DEFAULT_MORALE,
+    moraleBonus = 0,
+
+    allocatedPoints = 0,
+    level = 0,      -- Level 0    
+
+    skills = {},
+    skillsBonus = {},
+
+    subSkills = {}, -- table with skill as id
+    subSkillsBonus = {}
+}
 
 COLORS_DICE_TABLES = {
     -- Normal colors for status effects
