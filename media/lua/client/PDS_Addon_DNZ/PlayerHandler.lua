@@ -1,3 +1,4 @@
+---@diagnostic disable-next-line: unknown-cast-variable
 ---@cast DICE_CLIENT_MOD_DATA table<string, diceDataType_DNZ>
 
 ---@class PlayerHandler
@@ -12,6 +13,7 @@ local PlayerHandler = require("DiceSystem_PlayerHandling")
 local og_PlayerHandler_setupModDataTable = PlayerHandler.setupModDataTable
 
 ---@return table
+---@diagnostic disable-next-line: duplicate-set-field
 function PlayerHandler:setupModDataTable()
     local tempTable = og_PlayerHandler_setupModDataTable(self)
 
@@ -153,6 +155,7 @@ function PlayerHandler:setHealthBonus(points, bonusPoints)
 end
 
 ---Override to account for Health Bonus
+---@diagnostic disable-next-line: duplicate-set-field
 function PlayerHandler:getTotalHealth()
     return self:getMaxHealth() + self:getHealthBonus()
 end
@@ -235,6 +238,7 @@ end
 ---Increment a specific skillpoint
 ---@param skill string
 ---@return boolean
+---@diagnostic disable-next-line: duplicate-set-field
 function PlayerHandler:increaseSkillPoint(skill)
     local result = false
     if self.diceData.allocatedPoints < self.diceData.level and self.diceData.skills[skill] < PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS then
@@ -249,6 +253,7 @@ end
 ---Decrement a specific skillpoint
 ---@param skill string
 ---@return boolean
+---@diagnostic disable-next-line: duplicate-set-field
 function PlayerHandler:decreaseSkillPoint(skill)
     local result = false
     if self.diceData.skills[skill] > 0 then
@@ -267,6 +272,7 @@ end
 
 --- Override since we have different skills
 ---@param skill string
+---@diagnostic disable-next-line: duplicate-set-field
 function PlayerHandler:handleSkillPointSpecialCases(skill)
 
     local actualPoints = self:getSkillPoints(skill)
@@ -292,6 +298,7 @@ function PlayerHandler:handleSkillPointSpecialCases(skill)
 end
 
 ---@param skill string
+---@diagnostic disable-next-line: duplicate-set-field
 function PlayerHandler:getSpecialSkillPoints(skill)
 
     -- In theory, we could show the morale bonus and the health bonus too, but we won't to
