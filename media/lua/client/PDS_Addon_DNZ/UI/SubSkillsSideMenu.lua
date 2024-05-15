@@ -31,13 +31,15 @@ function SubSkillsSubMenu.Toggle(parent, startingBtn, skill)
         end
     end
 
+    local subSkills = PLAYER_DICE_VALUES.SUB_SKILLS[skill]
+    local skillsAmount = #subSkills
+
     local width = parent:getWidth()
-    local height = parent:getHeight()
+    local height = CommonUI.FRAME_HEIGHT * (skillsAmount + 1)
 
+    local x =  parent:getAbsoluteX() - parent:getWidth()
+    local y = startingBtn:getAbsoluteY() + startingBtn:getHeight() - height
 
-    -- FIX This will make the side bar jump up for a second before the render part
-    local x = parent:getAbsoluteX() - width
-    local y = parent:getBottom() - height
 
     local sidePanel = SubSkillsSubMenu:new(x, y, width, height, skill, parent, startingBtn)
     sidePanel:initialise()
@@ -84,16 +86,12 @@ function SubSkillsSubMenu:createChildren()
     ISPanel.createChildren(self)
 
     -- Add sub skills related to that specific skill
-
     local subSkills = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill]
-    --local y = 0
-    local frameHeight = 40
     local skillsAmount = #subSkills
 
+    local frameHeight = CommonUI.FRAME_HEIGHT
 
-    local height = frameHeight * (#subSkills + 1)
-    local y = height / 2 - (skillsAmount * frameHeight / 2)
-
+    local y = self.height / 2 - (skillsAmount * frameHeight / 2)
 
 
     ---@type DiceMenu
@@ -101,9 +99,6 @@ function SubSkillsSubMenu:createChildren()
     local isEditing = not parent.playerHandler:isPlayerInitialized() or parent:getIsAdminMode() or
     parent.playerHandler:getIsLevelingUp()
     local plUsername = getPlayer():getUsername()
-
-    --print("Creating createChildren for subskills")
-    --print("isEditing: " .. tostring(isEditing))
 
     for i = 1, #subSkills do
         local subSkill = subSkills[i]
@@ -116,24 +111,12 @@ function SubSkillsSubMenu:createChildren()
             plUsername)
 
 
-        -- -- We need to add another variable to the button, the "parent" of the subskill. Internally
-        -- -- we're still calling the subskill a "skill", so we're gonna have to call the "skill" something like
-        -- -- parentSKill
-        -- parent["btnPlus" .. subSkill].parentSkill = self.skill
-
-
-
         CommonUI.AddSkillPanelPointsLabel(self, skillPanel, subSkill)
 
         y = y + frameHeight
 
         self:addChild(skillPanel)
-        --self:setHeight(self:getHeight() + frameHeight)
     end
-
-
-    self:setHeight(height)
-
 end
 
 function SubSkillsSubMenu:update()
@@ -142,11 +125,9 @@ function SubSkillsSubMenu:update()
     ---@type DiceMenu
     local parent = self.parent -- just to have a reference
 
-
     local allocatedPoints = parent.playerHandler:getAllocatedSkillPoints()
     local isEditing = not parent.playerHandler:isPlayerInitialized() or parent:getIsAdminMode() or
     parent.playerHandler:getIsLevelingUp()
-
 
     for i = 1, #PLAYER_DICE_VALUES.SUB_SKILLS[self.skill] do
         local subSkill = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill][i]
@@ -180,7 +161,6 @@ function SubSkillsSubMenu:onOptionMouseDown(btn)
     local ph = self.parent.playerHandler
 
     -- TODO This is really confusing
-
     -- self.skill = CORE SKILL
     -- btn.skill = SUB SKILL
     local coreSkill = self.skill
@@ -201,14 +181,12 @@ end
 
 function SubSkillsSubMenu:render()
     ISPanel.render(self)
-
     -- Functionality to have side panel move with the rest of the menu
     local x = self.parent:getAbsoluteX() - self.parent:getWidth()
-    local y = self.startingBtn:getAbsoluteY() - self:getHeight() + self.startingBtn:getHeight() 
+    local y = self.startingBtn:getAbsoluteY() - self:getHeight() + self.startingBtn:getHeight()
 
     self:setX(x)
     self:setY(y)
-
 end
 
 function SubSkillsSubMenu:close()
