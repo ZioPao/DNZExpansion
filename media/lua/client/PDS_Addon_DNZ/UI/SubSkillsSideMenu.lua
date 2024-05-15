@@ -98,7 +98,6 @@ function SubSkillsSubMenu:createChildren()
 
 
     -- Add sub skills related to that specific skill
-
     local frameHeight = CommonUI.FRAME_HEIGHT
     local y = SKILL_LABEL_HEIGHT + Y_PADDING
 
