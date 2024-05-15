@@ -3,6 +3,11 @@ if not getActivatedMods():contains("PandemoniumDiceSystem") then return end
 local CommonUI = require("UI/DiceSystem_CommonUI")
 
 
+
+--------------
+local SKILL_LABEL_HEIGHT = 25
+local Y_PADDING = 10
+
 ------------------
 ---@class SubSkillsSubMenu : ISCollapsableWindow
 ---@field playerHandler PlayerHandler
@@ -35,7 +40,7 @@ function SubSkillsSubMenu.Toggle(parent, startingBtn, skill)
     local skillsAmount = #subSkills
 
     local width = parent:getWidth()
-    local height = CommonUI.FRAME_HEIGHT * (skillsAmount + 1)
+    local height = CommonUI.FRAME_HEIGHT * skillsAmount + SKILL_LABEL_HEIGHT + Y_PADDING*2
 
     local x =  parent:getAbsoluteX() - parent:getWidth()
     local y = startingBtn:getAbsoluteY() + startingBtn:getHeight() - height
@@ -85,13 +90,17 @@ end
 function SubSkillsSubMenu:createChildren()
     ISPanel.createChildren(self)
 
+
+    self["skillLabel"] = ISLabel:new(10, 2, SKILL_LABEL_HEIGHT, self.skill, 1, 1, 1, 1, UIFont.Large, true)
+    self["skillLabel"]:initialise()
+    self["skillLabel"]:instantiate()
+    self:addChild(self["skillLabel"])
+
+
     -- Add sub skills related to that specific skill
-    local subSkills = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill]
-    local skillsAmount = #subSkills
 
     local frameHeight = CommonUI.FRAME_HEIGHT
-
-    local y = self.height / 2 - (skillsAmount * frameHeight / 2)
+    local y = SKILL_LABEL_HEIGHT + Y_PADDING
 
 
     ---@type DiceMenu
@@ -99,6 +108,7 @@ function SubSkillsSubMenu:createChildren()
     local isEditing = not parent.playerHandler:isPlayerInitialized() or parent:getIsAdminMode() or
     parent.playerHandler:getIsLevelingUp()
     local plUsername = getPlayer():getUsername()
+    local subSkills = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill]
 
     for i = 1, #subSkills do
         local subSkill = subSkills[i]
