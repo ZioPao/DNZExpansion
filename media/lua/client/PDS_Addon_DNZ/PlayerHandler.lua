@@ -1,6 +1,7 @@
 ---@cast DICE_CLIENT_MOD_DATA table<string, diceDataType_DNZ>
 
 ---@class PlayerHandler
+---@diagnostic disable-next-line: duplicate-doc-field
 ---@field diceData diceDataType_DNZ
 local PlayerHandler = require("DiceSystem_PlayerHandling")
 ---------------------------------------
@@ -207,12 +208,12 @@ end
 function PlayerHandler:triggerLevelUp()
     -- check current level
     if self:getLevel() > PLAYER_DICE_VALUES.MAX_LEVELS then
-        print("Max level reached")
+        DiceSystem_Common.DebugWriteLog("Max level reached")
         return
     end
 
     if self:getIsLevelingUp() then
-        print("Already leveling up")
+        DiceSystem_Common.DebugWriteLog("Already leveling up")
         return
     end
 

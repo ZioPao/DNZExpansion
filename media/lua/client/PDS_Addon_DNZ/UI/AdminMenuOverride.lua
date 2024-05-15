@@ -63,7 +63,7 @@ function DiceMenuAdminViewer:onClick(button)
                 DICE_CLIENT_MOD_DATA[selectedPlayer:getUsername()].isLevelingUp = true
             end
 
-            print("level up for selected player")
+            DiceSystem_Common.DebugWriteLog("level up for selected player")
             sendClientCommand(DICE_SYSTEM_ADDON_DNZ_MOD_STRING, "RelayLevelUp", { userID = playerID })
         end)
     end

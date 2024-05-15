@@ -26,7 +26,7 @@ end
 
 local function OnClientCommand(module, command, playerObj, args)
 	if module ~= DICE_SYSTEM_ADDON_DNZ_MOD_STRING then return end
-	--print("Received ModData command " .. command)
+	--DiceSystem_Common.DebugWriteLog"Received ModData command " .. command)
 	if ClientCommands[command] and ClientCommands ~= nil then
 		ClientCommands[command](playerObj, args)
 		ModData.add(DICE_SYSTEM_MOD_STRING, ClientCommands)

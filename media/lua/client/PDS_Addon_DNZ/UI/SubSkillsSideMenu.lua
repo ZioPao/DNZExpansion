@@ -20,17 +20,17 @@ local SubSkillsSubMenu = ISPanel:derive("SubSkillsSubMenu")
 ---@param startingBtn ISButton
 ---@param parent DiceMenu
 function SubSkillsSubMenu.Toggle(parent, startingBtn, skill)
-    --print("Toggling side panel for skill " .. skill)
+    --DiceSystem_Common.DebugWriteLog"Toggling side panel for skill " .. skill)
     -- Check if side panel is already open
     if parent.openedPanel then
-        --print("opened panel already exists")
+        --DiceSystem_Common.DebugWriteLog"opened panel already exists")
         if parent.openedPanel:getIsVisible() then
-            --print("closing it")
+            --DiceSystem_Common.DebugWriteLog"closing it")
             parent.openedPanel:close()
 
             -- check if skill is the same, if it is then return here since we're toggling it
             if parent.openedPanel.skill == skill then
-                --print("toggle, returning")
+                --DiceSystem_Common.DebugWriteLog"toggle, returning")
                 return
             end
         end
@@ -112,7 +112,7 @@ function SubSkillsSubMenu:createChildren()
     for i = 1, #subSkills do
         local subSkill = subSkills[i]
         local skillPanel = CommonUI.CreateBaseSingleSkillPanel(self, subSkill, i % 2 ~= 0, y, frameHeight)
-        --print(subSkill)
+        --DiceSystem_Common.DebugWriteLogsubSkill)
 
         local xOffset = 10
         CommonUI.AddSkillPanelLabel(self, skillPanel, subSkill, xOffset, frameHeight)
@@ -149,7 +149,7 @@ function SubSkillsSubMenu:update()
         end
 
 
-        --print(subSkill)
+        --DiceSystem_Common.DebugWriteLogsubSkill)
         self["labelSkillPoints" .. subSkill]:setText(subSkillPointsString)
         self["labelSkillPoints" .. subSkill].textDirty = true
 
