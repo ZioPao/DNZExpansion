@@ -72,6 +72,7 @@ PLAYER_DICE_VALUES.DEFAULT_MORALE = 1
 PLAYER_DICE_VALUES.MAX_ALLOCATED_POINTS = 0     -- Level 0
 PLAYER_DICE_VALUES.MAX_LEVELS = 50
 PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS = 10
+PLAYER_DICE_VALUES.MAX_ARMOR_BONUS = 1000000      -- stupidly high value since I don't wanna mess with the code
 
 ---@alias diceDataType_DNZ {isInitialized : boolean, isLevelingUp : boolean, occupation : string, statusEffects : statusEffectsType, currentHealth : number, maxHealth : number, healthBonus : number, armorBonus : number, currentMovement : number, maxMovement : number, movementBonus : number, currentMorale : number, maxMorale : number, moraleBonus : number, allocatedPoints : number, level : number, skills : skillsTabType, skillsBonus : skillsBonusTabType, subSkills : table, subSkillsBonus : {}}
 
