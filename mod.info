@@ -1,7 +1,7 @@
 id=PDS_DNZE
 name=[ADDON] Pandemonium RP Dice System - DNZ Expansion
 require=PandemoniumDiceSystem
-description=...
+description=An expansion for Pandemonium RP Dice System dedicated to DNZ
 poster=poster.png
 authors=Pao
 icon=icon.png
