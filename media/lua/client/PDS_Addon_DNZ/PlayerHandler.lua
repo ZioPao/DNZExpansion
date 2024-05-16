@@ -325,7 +325,7 @@ function PlayerHandler:calculateWornItemsProtection(player)
         local item = wornItems:get(i - 1):getItem()
         if instanceof(item, "Clothing") then
             ---@cast item Clothing
-            protection = protection + item:getBulletDefense() + item:getScratchDefense() + item:getBiteDefense()
+            protection = protection + item:getBulletDefense() + item:getScratchDefense() + item:getBiteDefense() + item:getNeckProtectionModifier()
         end
     end
 

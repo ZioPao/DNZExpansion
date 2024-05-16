@@ -12,13 +12,13 @@ PLAYER_DICE_VALUES.SKILLS = {
 
 
 PLAYER_DICE_VALUES.OCCUPATIONS = {
-    "Paesant", "FormerSlave", "Survivalist", "Artificer",
+    "Peasant", "FormerSlave", "Survivalist", "Artificer",
     "Scribe", "TravellingMerchant", "Cowboy", "Tribesman",
     "Warrior", "Squire", "Thief", "Healer", "Diplomat"
 }
 
 PLAYER_DICE_VALUES.OCCUPATIONS_BONUS = {
-    Paesant = { Strength = 1 },
+    Peasant = { Strength = 1 },
     FormerSlave = { Strength = 2, Willpower = 1 },
     Survivalist = { Wisdom = 2, Reflex = 1 },
     Artificer = { Intelligence = 2, Wisdom = 1 },

@@ -1,6 +1,6 @@
 IG_UI_EN = {
     IGUI_Occupation = "Professions",
-    IGUI_Ocptn_Paesant = "Paesant",
+    IGUI_Ocptn_Peasant = "Peasant",
     IGUI_Ocptn_FormerSlave = "Former Slave",
     IGUI_Ocptn_Survivalist = "Survivalist",
     IGUI_Ocptn_Artificer = "Artificer",
