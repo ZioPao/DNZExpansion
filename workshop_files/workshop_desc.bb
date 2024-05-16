@@ -1,4 +1,4 @@
-[h1]Pandemonium RP Dice System ADDON - DNZ Expansion[/h1]
+[h1]Pandemonium Dice System ADDON - DNZ Expansion[/h1]
 An addon for [url=https://github.com/ZioPao/PandemoniumDiceSystem]Pandemonium Dice System[/url].
 Commissioned by the [i]Dungeonz & Zomboid[/i] community.
 

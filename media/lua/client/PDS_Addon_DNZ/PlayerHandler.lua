@@ -314,6 +314,25 @@ function PlayerHandler:getSpecialSkillPoints(skill)
 end
 
 
+---Override to add scratch and bite defense to the calculation of the armor bonus
+---@param player IsoPlayer
+---@return number
+function PlayerHandler:calculateWornItemsProtection(player)
+    local wornItems = player:getWornItems()
+    local protection = 0
+    for i = 1, wornItems:size() do
+        ---@type InventoryItem
+        local item = wornItems:get(i - 1):getItem()
+        if instanceof(item, "Clothing") then
+            ---@cast item Clothing
+            protection = protection + item:getBulletDefense() + item:getScratchDefense() + item:getBiteDefense()
+        end
+    end
+
+    return protection
+end
+
+
 -- Returns the modified PlayerHandler for DNZ
 
 
