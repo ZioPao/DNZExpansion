@@ -17,6 +17,15 @@
             "problemMatcher": [
                 "$eslint-stylish"
             ]
+        },
+        {
+            "label": "Test md to bb",
+            "options": {"statusbar": {"label": "$(run) README.md to Steam Workshop Description"}},
+            "type": "shell",
+            "command":"python ${config:zomboid_user_folder}/PaosCrap/markdown-to-steam-bb-code/markdown_to_bb.py picch ${workspaceFolderBasename}",
+            "problemMatcher": [
+                "$eslint-stylish"
+            ]
         }
     ]
 }
