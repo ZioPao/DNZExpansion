@@ -3,7 +3,7 @@ DICE_SYSTEM_ADDON_DNZ_MOD_STRING = "PDS_ADDON_DNZ"
 require("DiceSystem_Data")
 table.insert(DICE_SYSTEM_MOD_ADDONS, {
     name = "DNZ Expansion",
-    version = "1.0"
+    version = "1.0.1"
 })
 
 PLAYER_DICE_VALUES.SKILLS = {
