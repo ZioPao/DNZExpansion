@@ -141,11 +141,11 @@ function SubSkillsSubMenu:update()
     for i = 1, #PLAYER_DICE_VALUES.SUB_SKILLS[self.skill] do
         local subSkill = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill][i]
         local subSkillPoints = parent.playerHandler:getSubSkillPoints(self.skill, subSkill)
-        local bonusSubSkillPoints = parent.playerHandler:getSubSkillBonusPoints(self.skill, subSkill)
+        local bonusSubSkillPoints = parent.playerHandler:getBonusSkillPoints(subSkill)
         local subSkillPointsString = " <RIGHT> " .. string.format("%d", subSkillPoints)
-        if bonusSubSkillPoints ~= 0 then
+        if bonusSubSkillPoints and bonusSubSkillPoints ~= 0 then
             subSkillPointsString = subSkillPointsString ..
-                string.format(" <RGB:0.94,0.82,0.09> <SPACE> + <SPACE> %d", bonusSubSkillPoints)
+                string.format(" <RGB:0.94,0.82,0.09> <SPACE> %s <SPACE> %d", CommonUI.GetSign(bonusSubSkillPoints), bonusSubSkillPoints)
         end
 
 

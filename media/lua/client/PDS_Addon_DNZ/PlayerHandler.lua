@@ -20,11 +20,13 @@ function PlayerHandler:setupModDataTable()
     -- Setup subskills
     for skill, subSkillTable in pairs(PLAYER_DICE_VALUES.SUB_SKILLS) do
         tempTable.subSkills[skill] = {}
-        tempTable.subSkillsBonus[skill] = {}
+        -- TODO This is pretty janky, we're using skillsBonus with subSkills to get the full points, which isn't really ideal...
+        --tempTable.subSkillsBonus[skill] = {}
         for i=1, #subSkillTable do
             local subSkill = subSkillTable[i]
             tempTable.subSkills[skill][subSkill] = 0
-            tempTable.subSkillsBonus[skill][subSkill] = 0
+            --tempTable.subSkillsBonus[skill][subSkill] = 0
+            tempTable.skillsBonus[subSkill] = 0
 
         end
     end
@@ -40,21 +42,11 @@ function PlayerHandler:getSubSkillPoints(skill, subSkill)
     return self.diceData.subSkills[skill][subSkill]
 end
 
-
----@param skill string
----@param subSkill string
----@return integer
-function PlayerHandler:getSubSkillBonusPoints(skill, subSkill)
-    if not self:checkDiceDataValidity() then return -1 end
-    return self.diceData.subSkillsBonus[skill][subSkill]
-end
-
-
 ---@param coreSkill string
 ---@param subSkill string
 ---@return integer
 function PlayerHandler:getFullSubSkillPoints(coreSkill, subSkill)
-    return self:getSubSkillPoints(coreSkill, subSkill) + self:getSubSkillBonusPoints(coreSkill, subSkill)
+    return self:getSubSkillPoints(coreSkill, subSkill) + self:getBonusSkillPoints(subSkill)
 end
 
 ---Increment a specific sub skillpoint
@@ -107,6 +99,30 @@ function PlayerHandler:handleSubSkillPoint(coreSkill, subSkill, operation)
     return result
 end
 
+
+-- local og_PlayerHandler_setOccupation = PlayerHandler.setOccupation
+-- ---Set an occupation and its related bonuses
+-- ---@param occupation string
+-- function PlayerHandler:setOccupation(occupation)
+
+--     -- TODO Not ideal, we're doing it two times
+--     if not self:checkDiceDataValidity() then return end
+
+--     og_PlayerHandler_setOccupation(self, occupation)
+
+
+--     local bonusData = PLAYER_DICE_VALUES.OCCUPATIONS_BONUS[occupation]
+
+
+--     -- Reset diceData.skillBonus
+--     for k, _ in pairs(self.diceData.skillsBonus) do
+--         self.diceData.skillsBonus[k] = 0
+--     end
+
+--     for key, bonus in pairs(bonusData) do
+--         self.diceData.skillsBonus[key] = bonus
+--     end
+-- end
 
 --* MORALE *--
 
@@ -304,11 +320,11 @@ function PlayerHandler:getSpecialSkillPoints(skill)
     -- In theory, we could show the morale bonus and the health bonus too, but we won't to
     -- let the UI breathe
     local specialPoints = 0
-    if skill == "Reflex" then
+    -- if skill == "Reflex" then
 
-        -- Reflex has a malus with Armor Bonus
-        specialPoints = - self:getBonusStat("Armor")
-    end
+    --     -- Reflex has a malus with Armor Bonus
+    --     specialPoints = - self:getBonusStat("Armor")
+    -- end
 
     return specialPoints
 end
