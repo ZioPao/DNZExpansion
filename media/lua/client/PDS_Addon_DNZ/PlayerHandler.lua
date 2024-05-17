@@ -318,6 +318,14 @@ end
 ---@param player IsoPlayer
 ---@return number
 function PlayerHandler:calculateWornItemsProtection(player)
+
+    ---Returns the nearest 100 for a given value
+    ---@param val number
+    ---@return integer
+    local function GetProtection(val)
+        return math.floor(val / 100) * 100
+    end
+
     local wornItems = player:getWornItems()
     local protection = 0
     for i = 1, wornItems:size() do
@@ -325,7 +333,14 @@ function PlayerHandler:calculateWornItemsProtection(player)
         local item = wornItems:get(i - 1):getItem()
         if instanceof(item, "Clothing") then
             ---@cast item Clothing
-            protection = protection + item:getBulletDefense() + item:getScratchDefense() + item:getBiteDefense() + item:getNeckProtectionModifier()
+
+            -- mod 100?
+            local bulletDefProtection = GetProtection(item:getBulletDefense())
+            local scratchDefProtection = GetProtection(item:getScratchDefense())
+            local biteDefProtection = GetProtection(item:getBiteDefense())
+            local neckDefProtection = GetProtection(item:getNeckProtectionModifier())
+
+            protection = protection + bulletDefProtection + scratchDefProtection + biteDefProtection + neckDefProtection
         end
     end
 
