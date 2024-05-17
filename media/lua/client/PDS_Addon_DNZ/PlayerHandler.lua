@@ -306,8 +306,8 @@ function PlayerHandler:getSpecialSkillPoints(skill)
     local specialPoints = 0
     if skill == "Reflex" then
 
-        -- Reflex has a bonus with Armor Bonus
-        specialPoints = self:getBonusStat("Armor")
+        -- Reflex has a malus with Armor Bonus
+        specialPoints = - self:getBonusStat("Armor")
     end
 
     return specialPoints
