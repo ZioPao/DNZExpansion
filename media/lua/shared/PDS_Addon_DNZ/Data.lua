@@ -3,11 +3,11 @@ DICE_SYSTEM_ADDON_DNZ_MOD_STRING = "PDS_ADDON_DNZ"
 require("DiceSystem_Data")
 table.insert(DICE_SYSTEM_MOD_ADDONS, {
     name = "DNZ Expansion",
-    version = "1.0.2"
+    version = "1.0.3"
 })
 
 PLAYER_DICE_VALUES.SKILLS = {
-    "Body", "Wisdom", "Intelligence", "Reflex", "Charisma", "Willpower", "Luck"
+    "Body", "Reflex", "Wisdom", "Intelligence", "Charisma", "Willpower", "Special"
 }
 
 
@@ -39,22 +39,20 @@ PLAYER_DICE_VALUES.SUB_SKILLS = {
     Body = {
         "Strength", "Athletics", "Melee"
     },
+    Reflex = {
+        "Accuracy", "Stealth", "SleightOfHand"
+    },
     Wisdom = {
-        "Insight", "Perception", "FirstAid"
+        "Insight", "Perception", "Tech"
     },
     Intelligence = {
-        "Religion", "History", "Tech"
-    },
-    Reflex = {
-        "Accuracy", "Evasion", "Acrobatics", "Stealth", "Initiative", "SleightOfHand"
+        "Religion", "History", "FirstAid"
     },
     Charisma = {
         "Persuasion", "Intimidate", "Deception"
     },
-    Willpower = {
-        "Psychic"
-    },
-    Luck = {}
+    Willpower = {},
+    Special = {"Special1", "Special2", "Special3"},       -- Handled elsewhere, special case
 }
 
 PLAYER_DICE_VALUES.STATUS_EFFECTS = {

@@ -121,7 +121,14 @@ function DiceMenu:onOptionMouseDown(btn)
     end
     if btn.internal == "SUB_SKILLS_PANEL" then
         local skill = btn.skill
-        SubSkillsSubMenu.Toggle(self, btn, skill)
+
+
+        if #PLAYER_DICE_VALUES.SUB_SKILLS[skill] > 0 then
+            SubSkillsSubMenu.Toggle(self, btn, skill)
+        else
+            btn.enabled = false     -- todo test it
+        end
+
     end
 
     og_DiceMenu_onOptionMouseDown(self, btn)

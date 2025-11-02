@@ -1,7 +1,7 @@
 if not getActivatedMods():contains("PandemoniumDiceSystem") then return end
 
 local CommonUI = require("UI/DiceSystem_CommonUI")
-
+local SpecialSkillUI = require("PDS_Addon_DNZ/UI/SpecialSkills")
 
 
 --------------
@@ -13,6 +13,7 @@ local Y_PADDING = 10
 ---@field playerHandler PlayerHandler
 ---@field parent DiceMenu
 ---@field startingBtn ISButton
+---@field isEditingSpecial boolean
 local SubSkillsSubMenu = ISPanel:derive("SubSkillsSubMenu")
 
 --- Toggle the sub skill panel on the left of the dice menu
@@ -76,6 +77,7 @@ function SubSkillsSubMenu:new(x, y, width, height, skill, parent, startingBtn)
     o.skill = skill
     o.parent = parent
     o.startingBtn = startingBtn
+    o.isEditingSpecial = false
 
     return o
 end
@@ -97,6 +99,21 @@ function SubSkillsSubMenu:createChildren()
     self:addChild(self["skillLabel"])
 
 
+    -- TODO add special edit button
+
+    if self.skill == "Special" then
+        local ICON_SIZE = 32
+        self.editSpecialBtn = ISButton:new(self.width - ICON_SIZE - 2, 2, ICON_SIZE, ICON_SIZE, "EDIT", self, SubSkillsSubMenu.onOptionMouseDown)
+        --self.editBtn:setImage(self.diceIconOff)
+        self.editSpecialBtn.internal = "EDIT_SPECIAL"
+        self.editSpecialBtn:initialise()
+        self.editSpecialBtn:instantiate()
+        self.editSpecialBtn:setDisplayBackground(false)
+        
+        self:addChild(self.editSpecialBtn)
+    end
+
+
     -- Add sub skills related to that specific skill
     local frameHeight = CommonUI.FRAME_HEIGHT
     local y = SKILL_LABEL_HEIGHT + Y_PADDING
@@ -115,11 +132,15 @@ function SubSkillsSubMenu:createChildren()
         --DiceSystem_Common.DebugWriteLogsubSkill)
 
         local xOffset = 10
-        CommonUI.AddSkillPanelLabel(self, skillPanel, subSkill, xOffset, frameHeight)
-        CommonUI.AddSkillPanelButtons(self, skillPanel, parent.playerHandler, subSkill, isEditing, frameHeight,
-            plUsername)
 
+        if self.skill == 'Special' then
+            -- invisible by default
+            SpecialSkillUI.AddEditableSkillPanelLabel(self, skillPanel, i, xOffset, frameHeight, false)
+        end
+            CommonUI.AddSkillPanelLabel(self, skillPanel, subSkill, xOffset, frameHeight)
+        
 
+        CommonUI.AddSkillPanelButtons(self, skillPanel, parent.playerHandler, subSkill, isEditing, frameHeight, plUsername)
         CommonUI.AddSkillPanelPointsLabel(self, skillPanel, subSkill)
 
         y = y + frameHeight
@@ -141,8 +162,10 @@ function SubSkillsSubMenu:update()
     for i = 1, #PLAYER_DICE_VALUES.SUB_SKILLS[self.skill] do
         local subSkill = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill][i]
         local subSkillPoints = parent.playerHandler:getSubSkillPoints(self.skill, subSkill)
-        local bonusSubSkillPoints = parent.playerHandler:getBonusSkillPoints(subSkill)
         local subSkillPointsString = " <RIGHT> " .. string.format("%d", subSkillPoints)
+
+        local bonusSubSkillPoints = parent.playerHandler:getBonusSkillPoints(subSkill)
+
         if bonusSubSkillPoints and bonusSubSkillPoints ~= 0 then
             subSkillPointsString = subSkillPointsString ..
                 string.format(" <RGB:0.94,0.82,0.09> <SPACE> %s <SPACE> %d", CommonUI.GetSign(bonusSubSkillPoints), bonusSubSkillPoints)
@@ -178,6 +201,17 @@ function SubSkillsSubMenu:onOptionMouseDown(btn)
         ph:handleSubSkillPoint(coreSkill, subSkill, "+")
     elseif btn.internal == 'MINUS_SKILL' then
         ph:handleSubSkillPoint(coreSkill, subSkill, "-")
+    elseif btn.internal == 'EDIT_SPECIAL' then
+        -- todo edit special sub skills
+        self.isEditingSpecial = not self.isEditingSpecial
+        
+        for i = 1, 3 do
+            self["editSpecial"..i]:setVisible(self.isEditingSpecial)     --text entry
+            self["labelSpecial"..i]:setVisible(not self.isEditingSpecial)
+        end
+
+
+        -- todo force createChildren again...
     elseif btn.internal == 'SKILL_ROLL' then
         local points = ph:getFullSubSkillPoints(coreSkill, subSkill)
         DiceSystem_Common.Roll(btn.skill, points)
