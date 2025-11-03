@@ -72,7 +72,7 @@ PLAYER_DICE_VALUES.MAX_LEVELS = 50
 PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS = 10
 PLAYER_DICE_VALUES.MAX_ARMOR_BONUS = 1000000      -- stupidly high value since I don't wanna mess with the code
 
----@alias diceDataType_DNZ {isInitialized : boolean, isLevelingUp : boolean, occupation : string, statusEffects : statusEffectsType, currentHealth : number, maxHealth : number, healthBonus : number, armorBonus : number, currentMovement : number, maxMovement : number, movementBonus : number, currentMorale : number, maxMorale : number, moraleBonus : number, allocatedPoints : number, level : number, skills : skillsTabType, skillsBonus : skillsBonusTabType, subSkills : table, subSkillsBonus : {}}
+---@alias diceDataType_DNZ {isInitialized : boolean, isLevelingUp : boolean, occupation : string, statusEffects : statusEffectsType, currentHealth : number, maxHealth : number, healthBonus : number, armorBonus : number, currentMovement : number, maxMovement : number, movementBonus : number, currentMorale : number, maxMorale : number, moraleBonus : number, allocatedPoints : number, level : number, skills : skillsTabType, skillsBonus : skillsBonusTabType, subSkills : table, subSkillsBonus : {}, specialSubSkills: table}
 
 
 ---@type diceDataType_DNZ
@@ -105,7 +105,14 @@ PLAYER_DICE_VALUES.DEFAULT_MOD_TABLE = {
     skillsBonus = {},
 
     subSkills = {}, -- table with skill as id
-    subSkillsBonus = {}
+    subSkillsBonus = {},
+
+    -- todo need to save their name, linked to an id to be able to track allocated points without getting affected by the name
+    specialSubSkills = {
+        Special1="",
+        Special2="",
+        Special3=""
+    }
 
 
     -- We want to keep track of the status of the skills before assigning them...????????

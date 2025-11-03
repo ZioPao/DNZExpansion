@@ -39,6 +39,7 @@ IG_UI_EN = {
     IGUI_Skill_Charisma = "Charisma",
     IGUI_Skill_Willpower = "Willpower",
     IGUI_Skill_Luck = "Luck",
+    IGUI_Skill_Special = "Special",
 
     // SUB SKILLS
     // Not skills per se, but for simplicity sake let's say they are

@@ -109,7 +109,7 @@ function SubSkillsSubMenu:createChildren()
         self.editSpecialBtn:initialise()
         self.editSpecialBtn:instantiate()
         self.editSpecialBtn:setDisplayBackground(false)
-        
+
         self:addChild(self.editSpecialBtn)
     end
 
@@ -122,6 +122,7 @@ function SubSkillsSubMenu:createChildren()
     ---@type DiceMenu
     local parent = self.parent -- just to have a reference
     local isEditing = not parent.playerHandler:isPlayerInitialized() or parent:getIsAdminMode() or
+
     parent.playerHandler:getIsLevelingUp()
     local plUsername = getPlayer():getUsername()
     local subSkills = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill]
@@ -134,11 +135,13 @@ function SubSkillsSubMenu:createChildren()
         local xOffset = 10
 
         if self.skill == 'Special' then
+            local spSkillText = parent.playerHandler:getSpecialSubSkill(i)
             -- invisible by default
-            SpecialSkillUI.AddEditableSkillPanelLabel(self, skillPanel, i, xOffset, frameHeight, false)
-        end
+            SpecialSkillUI.AddEditableSkillPanelLabel(self, skillPanel, spSkillText, i, xOffset, frameHeight, false)
+            SpecialSkillUI.AddSpecialSkillPanelLabel(self, skillPanel, spSkillText, i, xOffset, frameHeight)
+        else
             CommonUI.AddSkillPanelLabel(self, skillPanel, subSkill, xOffset, frameHeight)
-        
+        end
 
         CommonUI.AddSkillPanelButtons(self, skillPanel, parent.playerHandler, subSkill, isEditing, frameHeight, plUsername)
         CommonUI.AddSkillPanelPointsLabel(self, skillPanel, subSkill)
@@ -202,16 +205,31 @@ function SubSkillsSubMenu:onOptionMouseDown(btn)
     elseif btn.internal == 'MINUS_SKILL' then
         ph:handleSubSkillPoint(coreSkill, subSkill, "-")
     elseif btn.internal == 'EDIT_SPECIAL' then
-        -- todo edit special sub skills
-        self.isEditingSpecial = not self.isEditingSpecial
-        
-        for i = 1, 3 do
-            self["editSpecial"..i]:setVisible(self.isEditingSpecial)     --text entry
-            self["labelSpecial"..i]:setVisible(not self.isEditingSpecial)
+
+        if self.isEditingSpecial then
+            self.editSpecialBtn:setTitle("SAVE")
+        else
+            self.editSpecialBtn:setTitle("EDIT")
         end
 
 
-        -- todo force createChildren again...
+        for i=1, 3 do
+            local spString = 'Special'..i
+            local text = self['edit'..spString]:getText()
+
+            if self.isEditingSpecial then
+                ph:setSpecialSubSkill(i, text)
+            end
+
+            -- Slightly confusing, to keep in a single loop, but it's correct
+            self["edit"..spString]:setVisible(not self.isEditingSpecial)
+            self["label"..spString]:setVisible(self.isEditingSpecial)
+            self['roll'..spString]:setEnable(self.isEditingSpecial)
+            self["label"..spString]:setName(text)
+        end
+
+        self.isEditingSpecial = not self.isEditingSpecial
+
     elseif btn.internal == 'SKILL_ROLL' then
         local points = ph:getFullSubSkillPoints(coreSkill, subSkill)
         DiceSystem_Common.Roll(btn.skill, points)

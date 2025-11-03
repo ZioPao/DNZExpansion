@@ -1,5 +1,5 @@
 local ServerCommands = {}
-local PlayerHandler = require("PDS_Addon_DNZ/PlayerHandler")
+require("PDS_Addon_DNZ/PlayerHandler") -- To make sure that we're loading the modifications
 
 
 function ServerCommands.ReceiveLevelUp(args)

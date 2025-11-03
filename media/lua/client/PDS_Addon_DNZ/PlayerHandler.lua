@@ -282,6 +282,20 @@ function PlayerHandler:decreaseSkillPoint(skill)
 end
 -- TODO Players should be able to accept or not a level up?
 
+--* SPECIAL SUB SKILLS *--
+
+
+---@param id number
+---@param name string
+function PlayerHandler:setSpecialSubSkill(id, name)
+    self.diceData.specialSubSkills["Special"..id] = name
+end
+
+---@param id number
+---@return string
+function PlayerHandler:getSpecialSubSkill(id)
+    return self.diceData.specialSubSkills["Special"..id]
+end
 
 
 --* VARIOUS *--
