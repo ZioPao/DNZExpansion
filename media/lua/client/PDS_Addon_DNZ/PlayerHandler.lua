@@ -297,6 +297,57 @@ function PlayerHandler:getSpecialSubSkill(id)
     return self.diceData.specialSubSkills["Special"..id]
 end
 
+--* ARMOR BONUS OVERRIDE
+--* ARMOR BONUS
+
+---Should run ONLY on the actual client, not from admins or other players
+---@return boolean
+function PlayerHandler:handleArmorBonus()
+    local pl = getPlayer()
+    if self.username ~= pl:getUsername() then return false end
+    if not self:checkDiceDataValidity() then return false end
+
+    local protection = self:calculateWornItemsProtection(pl)
+
+    -- Calculate the armor bonus
+    local armorBonus = math.floor(protection / 100)
+    if armorBonus < 0 then armorBonus = 0 end
+
+    -- Hard cap it at 3
+    if armorBonus > PLAYER_DICE_VALUES.MAX_ARMOR_BONUS then armorBonus = PLAYER_DICE_VALUES.MAX_ARMOR_BONUS end
+
+
+    -- TODO Cache old armor bonus before updating it
+
+    -- Set the correct amount of armor bonus
+    self:setBonusStat("Armor", armorBonus)
+
+
+    if self:isPlayerInitialized() then
+        sendClientCommand(DICE_SYSTEM_MOD_STRING, 'UpdateArmorBonus',
+            { armorBonus = armorBonus, username = self.username })
+    end
+
+    return true
+end
+
+---Override to add scratch and bite defense to the calculation of the armor bonus
+---@param player IsoPlayer
+---@return number
+function PlayerHandler:calculateWornItemsProtection(player)
+    return 0
+end
+
+
+---@return number
+function PlayerHandler:getCurrentArmor()
+    return self:getCurrentStat("Armor")
+end
+
+---@return number
+function PlayerHandler:getMaxArmor()
+    return self:getMaxStat("Armor")
+end
 
 --* VARIOUS *--
 

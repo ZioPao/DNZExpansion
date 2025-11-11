@@ -24,9 +24,9 @@ function DiceMenu:createChildren()
     panelMovementBonus:setX(0)
     panelMovementBonus:setWidth(self.width)
 
-    --* Armor Bonus *--
+    --* Armor Line *--
     local y = self.panelMovement:getY() + frameHeight
-    self:createPanelLine("ArmorBonus", y, frameHeight)
+    self:createPanelLine("Armor", y, frameHeight)
 
     y = y + frameHeight
 
@@ -201,9 +201,16 @@ function DiceMenu:update()
     og_DiceMenu_update(self)
     self:updateLevelLabel()
 
-    local currentMorale = self.playerHandler:getCurrentMorale()
-    local totalMorale = self.playerHandler:getTotalMorale()
+    ---@type PlayerHandler
+    local ph = self.playerHandler
+
+    local currentMorale = ph:getCurrentMorale()
+    local totalMorale = ph:getTotalMorale()
     self:updatePanelLine("Morale", currentMorale, totalMorale)
+
+    local currentArmor = ph:getCurrentArmor()
+    local totalArmor = ph:getMaxArmor()     -- no bonuses technically
+    self:updatePanelLine("Armor", currentArmor, totalArmor)
 end
 
 ---Updates label for the level, under player's name
@@ -229,7 +236,13 @@ function DiceMenu:updateLevelLabel()
 
 end
 
-
+-- Just movementBonus
+function DiceMenu:updateBonusValues()
+    local movementBonus = self.playerHandler:getMovementBonus()
+    local correctedMovBonus = movementBonus - self.playerHandler:getCurrentArmor()
+    self.panelMovementBonus:setText(getText("IGUI_PlayerUI_MovementBonus", CommonUI.GetSign(correctedMovBonus), correctedMovBonus))
+    self.panelMovementBonus.textDirty = true
+end
 -----------------------------------------------
 
 

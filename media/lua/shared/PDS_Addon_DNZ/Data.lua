@@ -66,11 +66,11 @@ PLAYER_DICE_VALUES.STATUS_EFFECTS = {
 
 PLAYER_DICE_VALUES.DEFAULT_HEALTH = 5
 PLAYER_DICE_VALUES.DEFAULT_MOVEMENT = 5
-PLAYER_DICE_VALUES.DEFAULT_MORALE = 2
+PLAYER_DICE_VALUES.DEFAULT_MORALE = 3
+PLAYER_DICE_VALUES.DEFAULT_ARMOR = 3
 PLAYER_DICE_VALUES.MAX_ALLOCATED_POINTS = 0     -- Level 0
 PLAYER_DICE_VALUES.MAX_LEVELS = 50
 PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS = 10
-PLAYER_DICE_VALUES.MAX_ARMOR_BONUS = 1000000      -- stupidly high value since I don't wanna mess with the code
 
 ---@alias diceDataType_DNZ {isInitialized : boolean, isLevelingUp : boolean, occupation : string, statusEffects : statusEffectsType, currentHealth : number, maxHealth : number, healthBonus : number, armorBonus : number, currentMovement : number, maxMovement : number, movementBonus : number, currentMorale : number, maxMorale : number, moraleBonus : number, allocatedPoints : number, level : number, skills : skillsTabType, skillsBonus : skillsBonusTabType, subSkills : table, subSkillsBonus : {}, specialSubSkills: table}
 
@@ -86,9 +86,10 @@ PLAYER_DICE_VALUES.DEFAULT_MOD_TABLE = {
     maxHealth = PLAYER_DICE_VALUES.DEFAULT_HEALTH,
     healthBonus = 0,
 
-
-
+    currentArmor = 0,
+    maxArmor = PLAYER_DICE_VALUES.DEFAULT_ARMOR,     -- technically not needed since this is capped, but let's keep it like this to be consistent
     armorBonus = 0,
+
 
     currentMovement = PLAYER_DICE_VALUES.DEFAULT_MOVEMENT,
     maxMovement = PLAYER_DICE_VALUES.DEFAULT_MOVEMENT,
