@@ -14,16 +14,33 @@ function DiceMenu:createChildren()
     og_DiceMenu_createChildren(self)
     local frameHeight = 40 * CommonUI.FONT_SCALE
 
-    --* Morale Line *--
-    local y = self.panelMovement:getY() + frameHeight
-    self:createPanelLine("Morale", y, frameHeight)
+    -- Destroy armor bonus panel, make mov bonus at the center
+    ---@type ISRichTextPanel
+    local panelArmorBonus = self.panelArmorBonus
+    panelArmorBonus:close()
 
-    self.labelSkillPointsAllocated:setY(self.labelSkillPointsAllocated:getY() + frameHeight)
+    ---@type ISRichTextPanel
+    local panelMovementBonus = self.panelMovementBonus
+    panelMovementBonus:setX(0)
+    panelMovementBonus:setWidth(self.width)
+
+    --* Armor Bonus *--
+    local y = self.panelMovement:getY() + frameHeight
+    self:createPanelLine("ArmorBonus", y, frameHeight)
+
+    y = y + frameHeight
+
+    --* Morale Line *--
+    self:createPanelLine("Morale", y, frameHeight)
+    y = y + frameHeight
+
+    self.labelSkillPointsAllocated:setY(y)
+
+    y = y + frameHeight + frameHeight/2
 
     -- Move the skillPanelContainer a bit more down
-    local finalY = y + frameHeight * 2
-    self.skillsPanelContainer:setY(finalY)
-    self:calculateHeight(finalY)
+    self.skillsPanelContainer:setY(y)
+    self:calculateHeight(y)
 
     -- We need to move the bottom buttons a bit to align them correctly again
     if self.btnConfirm then

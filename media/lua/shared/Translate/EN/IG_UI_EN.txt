@@ -29,6 +29,7 @@ IG_UI_EN = {
     IGUI_StsEfct_Sneaking = "Sneaking",
 
     IGUI_PlayerUI_Morale = " <CENTRE> Morale %1/%2",
+    IGUI_PlayerUI_ArmorBonus = " <CENTRE> Armor Bonus %1/%d",
 
 
     IGUI_SkillPointsAllocated = "Skill Points Allocated",
