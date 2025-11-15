@@ -1,0 +1,21 @@
+version=1
+id=3247577815
+title=[ADDON] Pandemonium RP Dice System - Dungeonz & Zomboid Expansion
+description=[h1]Pandemonium RP Dice System ADDON - DNZ Expansion[/h1]
+description=An addon for [url=https://github.com/ZioPao/PandemoniumDiceSystem]Pandemonium Dice System[/url].
+description=Commissioned by the [i]Dungeonz & Zomboid[/i] community.
+description=
+description=[h1]Features[/h1]
+description=[list]
+description=[*] A dedicated new ruleset for DNZ, complete with new skills and status effects
+description=[*] Support for subskills, with dedicated UI panels to access them from the main Dice Menu
+description=[*] Players can level up their skills with a new levelling up system
+description=[/list]
+description=
+description=[h1]Want to support me?[/h1]
+description=[url=https://ko-fi.com/M4M7IERNW][img]https://storage.ko-fi.com/cdn/kofi3.png[/img][/url]
+description=
+description=[hr][/hr]
+
+tags=Build 41;Framework;Misc;Realistic;Silly/Fun
+visibility=public
