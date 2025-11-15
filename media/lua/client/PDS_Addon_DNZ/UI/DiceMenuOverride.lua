@@ -172,10 +172,6 @@ end
 ---@param allocatedPoints number
 ---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:updateBtnModifierSkill(skill, skillPoints, allocatedPoints)
-
-    -- TODO We need a separate table to keep track of the oldSkills... fucking helllllllllllllllllllllllllllllllllllllllllllllll
-
-
     local enableMinus = skillPoints ~= self.oldSkills[skill]
     local enablePlus = skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and allocatedPoints < self.playerHandler:getLevel()
 

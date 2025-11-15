@@ -300,42 +300,16 @@ end
 --* ARMOR BONUS OVERRIDE
 --* ARMOR BONUS
 
----Should run ONLY on the actual client, not from admins or other players
----@return boolean
-function PlayerHandler:handleArmorBonus()
-    local pl = getPlayer()
-    if self.username ~= pl:getUsername() then return false end
-    if not self:checkDiceDataValidity() then return false end
-
-    local protection = self:calculateWornItemsProtection(pl)
-
-    -- Calculate the armor bonus
-    local armorBonus = math.floor(protection / 100)
-    if armorBonus < 0 then armorBonus = 0 end
-
-    -- Hard cap it at 3
-    if armorBonus > PLAYER_DICE_VALUES.MAX_ARMOR_BONUS then armorBonus = PLAYER_DICE_VALUES.MAX_ARMOR_BONUS end
-
-
-    -- TODO Cache old armor bonus before updating it
-
-    -- Set the correct amount of armor bonus
-    self:setBonusStat("Armor", armorBonus)
-
-
-    if self:isPlayerInitialized() then
-        sendClientCommand(DICE_SYSTEM_MOD_STRING, 'UpdateArmorBonus',
-            { armorBonus = armorBonus, username = self.username })
-    end
-
-    return true
-end
-
----Override to add scratch and bite defense to the calculation of the armor bonus
 ---@param player IsoPlayer
 ---@return number
+---@private
 function PlayerHandler:calculateWornItemsProtection(player)
     return 0
+end
+
+---total override, armor is handled completely differently now
+function PlayerHandler:handleArmorBonus()
+    return nil
 end
 
 
@@ -394,42 +368,6 @@ function PlayerHandler:getSpecialSkillPoints(skill)
     return specialPoints
 end
 
-
----Override to add scratch and bite defense to the calculation of the armor bonus
----@param player IsoPlayer
----@return number
-function PlayerHandler:calculateWornItemsProtection(player)
-
-    ---Returns the nearest 100 for a given value
-    ---@param val number
-    ---@return integer
-    local function GetProtection(val)
-        return math.floor(val / 100) * 100
-    end
-
-    local wornItems = player:getWornItems()
-    local protection = 0
-    for i = 1, wornItems:size() do
-        ---@type InventoryItem
-        local item = wornItems:get(i - 1):getItem()
-        if instanceof(item, "Clothing") then
-            ---@cast item Clothing
-
-            -- mod 100?
-            local bulletDefProtection = GetProtection(item:getBulletDefense())
-            local scratchDefProtection = GetProtection(item:getScratchDefense())
-            local biteDefProtection = GetProtection(item:getBiteDefense())
-            local neckDefProtection = GetProtection(item:getNeckProtectionModifier())
-
-            protection = protection + bulletDefProtection + scratchDefProtection + biteDefProtection + neckDefProtection
-        end
-    end
-
-    return protection
-end
-
-
--- Returns the modified PlayerHandler for DNZ
 
 
 return PlayerHandler

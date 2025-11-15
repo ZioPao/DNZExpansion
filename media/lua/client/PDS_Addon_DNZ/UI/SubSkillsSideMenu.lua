@@ -13,7 +13,7 @@ local Y_PADDING = 10
 ---@field playerHandler PlayerHandler
 ---@field parent DiceMenu
 ---@field startingBtn ISButton
----@field isEditingSpecial boolean
+---@field isCustomizingSpecial boolean
 local SubSkillsSubMenu = ISPanel:derive("SubSkillsSubMenu")
 
 --- Toggle the sub skill panel on the left of the dice menu
@@ -77,7 +77,7 @@ function SubSkillsSubMenu:new(x, y, width, height, skill, parent, startingBtn)
     o.skill = skill
     o.parent = parent
     o.startingBtn = startingBtn
-    o.isEditingSpecial = false
+    o.isCustomizingSpecial = false
 
     return o
 end
@@ -92,6 +92,10 @@ end
 function SubSkillsSubMenu:createChildren()
     ISPanel.createChildren(self)
 
+    ---@type DiceMenu
+    local parent = self.parent -- just to have a reference
+    local isEditing = not parent.playerHandler:isPlayerInitialized() or parent:getIsAdminMode() or parent.playerHandler:getIsLevelingUp()
+    local plUsername = getPlayer():getUsername()
 
     self["skillLabel"] = ISLabel:new(10, 2, SKILL_LABEL_HEIGHT, self.skill, 1, 1, 1, 1, UIFont.Large, true)
     self["skillLabel"]:initialise()
@@ -99,16 +103,14 @@ function SubSkillsSubMenu:createChildren()
     self:addChild(self["skillLabel"])
 
 
-    -- TODO add special edit button
-
+    -- Special subskills can be customized always. When in edit mode, the button shouldn't even show up and the changes should be saved when saving everything else
     if self.skill == "Special" then
-        local ICON_SIZE = 32
-        self.editSpecialBtn = ISButton:new(self.width - ICON_SIZE - 2, 2, ICON_SIZE, ICON_SIZE, "EDIT", self, SubSkillsSubMenu.onOptionMouseDown)
-        --self.editBtn:setImage(self.diceIconOff)
+        local TEXT_SIZE = 100
+        self.editSpecialBtn = ISButton:new(self.width - TEXT_SIZE - 4, 4, TEXT_SIZE, 24, "EDIT", self, SubSkillsSubMenu.onOptionMouseDown)
         self.editSpecialBtn.internal = "EDIT_SPECIAL"
         self.editSpecialBtn:initialise()
         self.editSpecialBtn:instantiate()
-        self.editSpecialBtn:setDisplayBackground(false)
+        --self.editSpecialBtn:setDisplayBackground(false)
 
         self:addChild(self.editSpecialBtn)
     end
@@ -119,12 +121,7 @@ function SubSkillsSubMenu:createChildren()
     local y = SKILL_LABEL_HEIGHT + Y_PADDING
 
 
-    ---@type DiceMenu
-    local parent = self.parent -- just to have a reference
-    local isEditing = not parent.playerHandler:isPlayerInitialized() or parent:getIsAdminMode() or
 
-    parent.playerHandler:getIsLevelingUp()
-    local plUsername = getPlayer():getUsername()
     local subSkills = PLAYER_DICE_VALUES.SUB_SKILLS[self.skill]
 
     for i = 1, #subSkills do
@@ -138,7 +135,8 @@ function SubSkillsSubMenu:createChildren()
             local spSkillText = parent.playerHandler:getSpecialSubSkill(i)
             -- invisible by default
             SpecialSkillUI.AddEditableSkillPanelLabel(self, skillPanel, spSkillText, i, xOffset, frameHeight, false)
-            SpecialSkillUI.AddSpecialSkillPanelLabel(self, skillPanel, spSkillText, i, xOffset, frameHeight)
+
+            SpecialSkillUI.AddSpecialSkillPanelLabel(self, skillPanel, spSkillText, i, xOffset, frameHeight, true)
         else
             CommonUI.AddSkillPanelLabel(self, skillPanel, subSkill, xOffset, frameHeight)
         end
@@ -188,6 +186,29 @@ function SubSkillsSubMenu:update()
                 allocatedPoints < parent.playerHandler:getLevel()
             CommonUI.UpdateBtnSkillModifier(self, subSkill, enableMinus, enablePlus)
         end
+
+
+        -- if special sub skills do not have a name, disable roll
+
+        if self.skill == 'Special' and not self.isCustomizingSpecial then
+            local spString = 'Special'..i
+            local text = self['edit'..spString]:getText()
+            if self['roll'..spString] then
+                self['roll'..spString]:setEnable(text ~= '')
+            end
+        end
+
+    end
+
+    -- text validation in a single check to make things simple. not efficient but eh
+    if self.skill == 'Special' then
+        if self.isCustomizingSpecial then
+            local canSave = self['editSpecial1']:getText() ~= self['editSpecial2']:getText() and
+                self['editSpecial2']:getText() ~= self['editSpecial3']:getText() and
+                self['editSpecial1']:getText() ~= self['editSpecial3']:getText()
+
+            self.editSpecialBtn:setEnable(canSave)
+        end
     end
 end
 
@@ -205,30 +226,31 @@ function SubSkillsSubMenu:onOptionMouseDown(btn)
     elseif btn.internal == 'MINUS_SKILL' then
         ph:handleSubSkillPoint(coreSkill, subSkill, "-")
     elseif btn.internal == 'EDIT_SPECIAL' then
+        self.isCustomizingSpecial = not self.isCustomizingSpecial
 
-        if self.isEditingSpecial then
+        if self.isCustomizingSpecial then
             self.editSpecialBtn:setTitle("SAVE")
         else
             self.editSpecialBtn:setTitle("EDIT")
         end
 
-
         for i=1, 3 do
             local spString = 'Special'..i
             local text = self['edit'..spString]:getText()
 
-            if self.isEditingSpecial then
+            if not self.isCustomizingSpecial then
                 ph:setSpecialSubSkill(i, text)
             end
 
             -- Slightly confusing, to keep in a single loop, but it's correct
-            self["edit"..spString]:setVisible(not self.isEditingSpecial)
-            self["label"..spString]:setVisible(self.isEditingSpecial)
-            self['roll'..spString]:setEnable(self.isEditingSpecial)
+            self["edit"..spString]:setVisible(self.isCustomizingSpecial)
+            self["label"..spString]:setVisible(not self.isCustomizingSpecial)
+
+            if self['roll'..spString] then
+                self['roll'..spString]:setEnable(not self.isCustomizingSpecial)
+            end
             self["label"..spString]:setName(text)
         end
-
-        self.isEditingSpecial = not self.isEditingSpecial
 
     elseif btn.internal == 'SKILL_ROLL' then
         local points = ph:getFullSubSkillPoints(coreSkill, subSkill)
