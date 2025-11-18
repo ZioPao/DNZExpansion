@@ -14,16 +14,33 @@ function DiceMenu:createChildren()
     og_DiceMenu_createChildren(self)
     local frameHeight = 40 * CommonUI.FONT_SCALE
 
-    --* Morale Line *--
-    local y = self.panelMovement:getY() + frameHeight
-    self:createPanelLine("Morale", y, frameHeight)
+    -- Destroy armor bonus panel, make mov bonus at the center
+    ---@type ISRichTextPanel
+    local panelArmorBonus = self.panelArmorBonus
+    panelArmorBonus:close()
 
-    self.labelSkillPointsAllocated:setY(self.labelSkillPointsAllocated:getY() + frameHeight)
+    ---@type ISRichTextPanel
+    local panelMovementBonus = self.panelMovementBonus
+    panelMovementBonus:setX(0)
+    panelMovementBonus:setWidth(self.width)
+
+    --* Armor Line *--
+    local y = self.panelMovement:getY() + frameHeight
+    self:createPanelLine("Armor", y, frameHeight)
+
+    y = y + frameHeight
+
+    --* Morale Line *--
+    self:createPanelLine("Morale", y, frameHeight)
+    y = y + frameHeight
+
+    self.labelSkillPointsAllocated:setY(y)
+
+    y = y + frameHeight + frameHeight/2
 
     -- Move the skillPanelContainer a bit more down
-    local finalY = y + frameHeight * 2
-    self.skillsPanelContainer:setY(finalY)
-    self:calculateHeight(finalY)
+    self.skillsPanelContainer:setY(y)
+    self:calculateHeight(y)
 
     -- We need to move the bottom buttons a bit to align them correctly again
     if self.btnConfirm then
@@ -121,7 +138,14 @@ function DiceMenu:onOptionMouseDown(btn)
     end
     if btn.internal == "SUB_SKILLS_PANEL" then
         local skill = btn.skill
-        SubSkillsSubMenu.Toggle(self, btn, skill)
+
+
+        if #PLAYER_DICE_VALUES.SUB_SKILLS[skill] > 0 then
+            SubSkillsSubMenu.Toggle(self, btn, skill)
+        else
+            btn.enabled = false     -- todo test it
+        end
+
     end
 
     og_DiceMenu_onOptionMouseDown(self, btn)
@@ -148,10 +172,6 @@ end
 ---@param allocatedPoints number
 ---@diagnostic disable-next-line: duplicate-set-field
 function DiceMenu:updateBtnModifierSkill(skill, skillPoints, allocatedPoints)
-
-    -- TODO We need a separate table to keep track of the oldSkills... fucking helllllllllllllllllllllllllllllllllllllllllllllll
-
-
     local enableMinus = skillPoints ~= self.oldSkills[skill]
     local enablePlus = skillPoints ~= PLAYER_DICE_VALUES.MAX_PER_SKILL_ALLOCATED_POINTS and allocatedPoints < self.playerHandler:getLevel()
 
@@ -177,9 +197,16 @@ function DiceMenu:update()
     og_DiceMenu_update(self)
     self:updateLevelLabel()
 
-    local currentMorale = self.playerHandler:getCurrentMorale()
-    local totalMorale = self.playerHandler:getTotalMorale()
+    ---@type PlayerHandler
+    local ph = self.playerHandler
+
+    local currentMorale = ph:getCurrentMorale()
+    local totalMorale = ph:getTotalMorale()
     self:updatePanelLine("Morale", currentMorale, totalMorale)
+
+    local currentArmor = ph:getCurrentArmor()
+    local totalArmor = ph:getMaxArmor()     -- no bonuses technically
+    self:updatePanelLine("Armor", currentArmor, totalArmor)
 end
 
 ---Updates label for the level, under player's name
@@ -205,7 +232,13 @@ function DiceMenu:updateLevelLabel()
 
 end
 
-
+-- Just movementBonus
+function DiceMenu:updateBonusValues()
+    local movementBonus = self.playerHandler:getMovementBonus()
+    local correctedMovBonus = movementBonus - self.playerHandler:getCurrentArmor()
+    self.panelMovementBonus:setText(getText("IGUI_PlayerUI_MovementBonus", CommonUI.GetSign(correctedMovBonus), correctedMovBonus))
+    self.panelMovementBonus.textDirty = true
+end
 -----------------------------------------------
 
 

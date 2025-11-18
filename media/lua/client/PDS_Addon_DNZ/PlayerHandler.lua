@@ -282,7 +282,46 @@ function PlayerHandler:decreaseSkillPoint(skill)
 end
 -- TODO Players should be able to accept or not a level up?
 
+--* SPECIAL SUB SKILLS *--
 
+
+---@param id number
+---@param name string
+function PlayerHandler:setSpecialSubSkill(id, name)
+    self.diceData.specialSubSkills["Special"..id] = name
+end
+
+---@param id number
+---@return string
+function PlayerHandler:getSpecialSubSkill(id)
+    return self.diceData.specialSubSkills["Special"..id]
+end
+
+--* ARMOR BONUS OVERRIDE
+--* ARMOR BONUS
+
+---@param player IsoPlayer
+---@return number
+---@private
+function PlayerHandler:calculateWornItemsProtection(player)
+    return 0
+end
+
+---total override, armor is handled completely differently now
+function PlayerHandler:handleArmorBonus()
+    return nil
+end
+
+
+---@return number
+function PlayerHandler:getCurrentArmor()
+    return self:getCurrentStat("Armor")
+end
+
+---@return number
+function PlayerHandler:getMaxArmor()
+    return self:getMaxStat("Armor")
+end
 
 --* VARIOUS *--
 
@@ -329,42 +368,6 @@ function PlayerHandler:getSpecialSkillPoints(skill)
     return specialPoints
 end
 
-
----Override to add scratch and bite defense to the calculation of the armor bonus
----@param player IsoPlayer
----@return number
-function PlayerHandler:calculateWornItemsProtection(player)
-
-    ---Returns the nearest 100 for a given value
-    ---@param val number
-    ---@return integer
-    local function GetProtection(val)
-        return math.floor(val / 100) * 100
-    end
-
-    local wornItems = player:getWornItems()
-    local protection = 0
-    for i = 1, wornItems:size() do
-        ---@type InventoryItem
-        local item = wornItems:get(i - 1):getItem()
-        if instanceof(item, "Clothing") then
-            ---@cast item Clothing
-
-            -- mod 100?
-            local bulletDefProtection = GetProtection(item:getBulletDefense())
-            local scratchDefProtection = GetProtection(item:getScratchDefense())
-            local biteDefProtection = GetProtection(item:getBiteDefense())
-            local neckDefProtection = GetProtection(item:getNeckProtectionModifier())
-
-            protection = protection + bulletDefProtection + scratchDefProtection + biteDefProtection + neckDefProtection
-        end
-    end
-
-    return protection
-end
-
-
--- Returns the modified PlayerHandler for DNZ
 
 
 return PlayerHandler

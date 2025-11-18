@@ -1,18 +1,22 @@
 IG_UI_EN = {
     IGUI_Occupation = "Professions",
-    IGUI_Ocptn_Peasant = "Peasant",
-    IGUI_Ocptn_FormerSlave = "Former Slave",
-    IGUI_Ocptn_Survivalist = "Survivalist",
-    IGUI_Ocptn_Artificer = "Artificer",
-    IGUI_Ocptn_Scribe = "Scribe",
-    IGUI_Ocptn_TravellingMerchant = "Travelling Merchant",
-    IGUI_Ocptn_Cowboy = "Cowboy",
-    IGUI_Ocptn_Tribesman = "Tribesman",
-    IGUI_Ocptn_Warrior = "Warrior",
-    IGUI_Ocptn_Squire = "Squire",
+
+    IGUI_Ocptn_PoliceAcademy = "Police Academy",
+    IGUI_Ocptn_MilitaryTraining = "Military Training",
+    IGUI_Ocptn_Courier = "Courier",
+    IGUI_Ocptn_BlueCollar = "Blue-Collar",
     IGUI_Ocptn_Thief = "Thief",
-    IGUI_Ocptn_Healer = "Healer",
-    IGUI_Ocptn_Diplomat = "Diplomat",
+    IGUI_Ocptn_Tender = "Tender",
+    IGUI_Ocptn_Graduate = "Graduate",
+    IGUI_Ocptn_FirstAidTraining = "First Aid Training",
+    IGUI_Ocptn_Politician = "Politician",
+    IGUI_Ocptn_Artist = "Artist",
+    IGUI_Ocptn_Activist = "Activist",
+    IGUI_Ocptn_Athlete = "Athlete",
+    IGUI_Ocptn_MartialArtist = "Martial Artist",
+    IGUI_Ocptn_Reporter = "Reporter",
+    IGUI_Ocptn_Engineer = "Engineer",
+    IGUI_Ocptn_Trapper = "Trapper",
    
 
     IGUI_StatusEffect = "Status Effect",
@@ -29,6 +33,7 @@ IG_UI_EN = {
     IGUI_StsEfct_Sneaking = "Sneaking",
 
     IGUI_PlayerUI_Morale = " <CENTRE> Morale %1/%2",
+    IGUI_PlayerUI_Armor = " <CENTRE> Armor %1/%2",
 
 
     IGUI_SkillPointsAllocated = "Skill Points Allocated",
@@ -39,6 +44,7 @@ IG_UI_EN = {
     IGUI_Skill_Charisma = "Charisma",
     IGUI_Skill_Willpower = "Willpower",
     IGUI_Skill_Luck = "Luck",
+    IGUI_Skill_Special = "Special",
 
     // SUB SKILLS
     // Not skills per se, but for simplicity sake let's say they are
