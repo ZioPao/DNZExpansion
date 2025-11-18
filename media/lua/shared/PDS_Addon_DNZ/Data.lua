@@ -45,7 +45,7 @@ PLAYER_DICE_VALUES.SUB_SKILLS = {
         "Strength", "Athletics", "Melee"
     },
     Reflex = {
-        "Accuracy", "Stealth", "SleightOfHand"
+        "Accuracy", "Stealth", "SleightOfHand", "Acrobatics"
     },
     Wisdom = {
         "Insight", "Perception", "Tech"
@@ -113,7 +113,6 @@ PLAYER_DICE_VALUES.DEFAULT_MOD_TABLE = {
     subSkills = {}, -- table with skill as id
     subSkillsBonus = {},
 
-    -- todo need to save their name, linked to an id to be able to track allocated points without getting affected by the name
     specialSubSkills = {
         Special1="",
         Special2="",
